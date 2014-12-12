@@ -7,8 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+@class Aperture;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate>{
+  Aperture *aperture;
+}
 
 
 @end

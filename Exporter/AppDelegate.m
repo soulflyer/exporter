@@ -7,6 +7,12 @@
 //
 
 #import "AppDelegate.h"
+@class Aperture;
+
+@interface Aperture:NSObject
+// declare methods here
+-(NSString *)libraryPath;
+@end
 
 @interface AppDelegate ()
 
@@ -17,6 +23,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   // Insert code here to initialize your application
+  aperture = [[NSClassFromString(@"Aperture") alloc] init];
+  NSLog(@"%@",[aperture libraryPath]);
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

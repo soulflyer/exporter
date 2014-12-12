@@ -12,6 +12,8 @@
 		AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AED9645C1A3AA4F000E72772 /* Images.xcassets */; };
 		AED964601A3AA4F000E72772 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AED9645E1A3AA4F000E72772 /* MainMenu.xib */; };
 		AED9646C1A3AA4F100E72772 /* ExporterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AED9646B1A3AA4F100E72772 /* ExporterTests.m */; };
+		AED964761A3AB21000E72772 /* AppleScriptObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AED964751A3AB21000E72772 /* AppleScriptObjC.framework */; };
+		AED964781A3AB52100E72772 /* Aperture.applescript in Sources */ = {isa = PBXBuildFile; fileRef = AED964771A3AB52100E72772 /* Aperture.applescript */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,8 @@
 		AED964651A3AA4F100E72772 /* ExporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED9646A1A3AA4F100E72772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED9646B1A3AA4F100E72772 /* ExporterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExporterTests.m; sourceTree = "<group>"; };
+		AED964751A3AB21000E72772 /* AppleScriptObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppleScriptObjC.framework; path = System/Library/Frameworks/AppleScriptObjC.framework; sourceTree = SDKROOT; };
+		AED964771A3AB52100E72772 /* Aperture.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; path = Aperture.applescript; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AED964761A3AB21000E72772 /* AppleScriptObjC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +63,7 @@
 		AED964491A3AA4F000E72772 = {
 			isa = PBXGroup;
 			children = (
+				AED964751A3AB21000E72772 /* AppleScriptObjC.framework */,
 				AED964541A3AA4F000E72772 /* Exporter */,
 				AED964681A3AA4F100E72772 /* ExporterTests */,
 				AED964531A3AA4F000E72772 /* Products */,
@@ -90,6 +96,7 @@
 			children = (
 				AED964561A3AA4F000E72772 /* Info.plist */,
 				AED9645A1A3AA4F000E72772 /* main.m */,
+				AED964771A3AB52100E72772 /* Aperture.applescript */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -212,6 +219,7 @@
 			files = (
 				AED9645B1A3AA4F000E72772 /* main.m in Sources */,
 				AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */,
+				AED964781A3AB52100E72772 /* Aperture.applescript in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

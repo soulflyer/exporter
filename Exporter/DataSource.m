@@ -26,7 +26,7 @@
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
-    return (item == nil) ? @"/" : (id)[item apertureID];
+    return (item == nil) ? @"/" : (id)[item apertureName];
 }
 
 // Delegate methods

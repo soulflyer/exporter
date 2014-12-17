@@ -32,14 +32,14 @@
   NSString *blah = [NSClassFromString(@"Aperture") libraryPath];
   NSLog(@"LibPath from class method: %@",blah);
                   
-  NSArray *topFolders=[aperture topLevelFolders];
+  //NSArray *topFolders=[aperture topLevelFolders];
   //NSLog(@"topFolders: %@",topFolders);
   //NSString *folderID=[aperture getFolderID];
-  NSString  *folderID=topFolders[2];
+  //NSString  *folderID=topFolders[2];
   //NSLog(@"FolderID: %@",folderID);
-  NSString *folderName=[aperture getFolderName:folderID];
+  //NSString *folderName=[aperture getFolderName:folderID];
   //NSLog(@"Folder: %@",folderName);
-  NSArray *childrenArray = [aperture getChildren:folderID];
+  //NSArray *childrenArray = [aperture getChildren:folderID];
   //NSLog(@"%@",childrenArray);
   
 }

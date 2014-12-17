@@ -15,13 +15,13 @@
   NSMutableArray *children;
   NSString *itemType;
   NSString *apertureID;
+  NSString *apertureName;
 }
 
 + (ApertureItem *)rootItem;
 - (NSInteger)numberOfChildren;			// Returns -1 for leaf nodes
 - (ApertureItem *)childAtIndex:(NSInteger)n;	// Invalid to call on leaf nodes
-//- (NSString *)fullPath;
-//- (NSString *)relativePath;
 - (NSString *)apertureID;
+- (NSString *)apertureName;
 
 @end

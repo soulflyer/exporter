@@ -26,23 +26,22 @@ static ApertureItem *rootItem = nil;
 
 #define IsALeafNode ((id)-1)
 
-//- (id)initWithPath:(NSString *)path parent:(ApertureItem *)obj {
-//    if (self = [super init]) {
-//        relativePath = [[path lastPathComponent] copy];
-//        parent = obj;
-//    }
-//    return self;
-//}
-
-- (id)initWithID:(NSString *)aID parent:(ApertureItem *)obj {
+- (id)initWithID:(NSString *)apID parent:(ApertureItem *)obj {
   if (self = [super init]) {
-    //relativePath = [[path lastPathComponent] copy];
-    apertureID = aID;
+    apertureID = apID;
     parent = obj;
   }
   return self;
 }
 
+- (id)initWithID:(NSString *)apID name:(NSString*)apName parent:(ApertureItem *)obj {
+  if (self = [super init]) {
+    apertureID = apID;
+    parent = obj;
+    apertureName = apName;
+  }
+  return self;
+}
 + (ApertureItem *)rootItem {
    if (rootItem == nil) rootItem = [[ApertureItem alloc] initWithID:@"root" parent:nil];
    return rootItem;       
@@ -55,7 +54,7 @@ static ApertureItem *rootItem = nil;
 - (NSArray *)children {
   
   if (children == NULL) {
-    NSLog(@"starting ApertureItem children with apertureID %@",[self apertureID]);
+    //NSLog(@"starting ApertureItem children with apertureID %@",[self apertureID]);
     Aperture *aperture = [[NSClassFromString(@"Aperture") alloc] init];
     NSArray *array;
     if ([[self apertureID]  isEqual: @"root"]) {
@@ -66,43 +65,21 @@ static ApertureItem *rootItem = nil;
     NSInteger cnt, numChildren = [array count];
     children = [[NSMutableArray alloc] initWithCapacity:numChildren];
     for (cnt = 0; cnt < numChildren; cnt++) {
-      ApertureItem *item = [[ApertureItem alloc] initWithID:[array objectAtIndex:cnt] parent:self];
+      NSString *an = [aperture getFolderName:[array objectAtIndex:cnt]];
+      NSLog(@"an %@",an);
+      ApertureItem *item = [[ApertureItem alloc] initWithID:[array objectAtIndex:cnt] name:an  parent:self];
       [children addObject:item];
     }
-    
-
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSString *fullPath = [self fullPath];
-//    BOOL isDir, valid = [fileManager fileExistsAtPath:fullPath isDirectory:&isDir];
-//    if (valid && isDir) {
-//      NSArray *array = [fileManager contentsOfDirectoryAtPath:fullPath error:NULL];
-//      if (!array) {   // This is unexpected
-//        children = [[NSMutableArray alloc] init];
-//      } else {
-//        NSInteger cnt, numChildren = [array count];
-//        children = [[NSMutableArray alloc] initWithCapacity:numChildren];
-//        for (cnt = 0; cnt < numChildren; cnt++) {
-//          ApertureItem *item = [[ApertureItem alloc] initWithPath:[array objectAtIndex:cnt] parent:self];
-//          [children addObject:item];
-//        }
-//      }
-//    } else {
-//      children = NULL;
-//    }
   }
   return children;
 }
 
-//- (NSString *)relativePath {
-//    return relativePath;
-//}
-//
-//- (NSString *)fullPath {
-//    return parent ? [[parent fullPath] stringByAppendingPathComponent:relativePath] : relativePath;
-//}
-
 - (NSString *)apertureID {
   return apertureID;
+}
+
+- (NSString *)apertureName {
+  return apertureName;
 }
 
 - (ApertureItem *)childAtIndex:(NSInteger)n {

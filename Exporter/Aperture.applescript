@@ -27,14 +27,13 @@ script Aperture
 	
 	on getChildren:folderID
 		set folderID to folderID as text
-		log folderID
+		--log folderID
 		set returnValue to {}
 		tell application "Aperture"
 			set sels to every folder whose parent's id is folderID
 			repeat with sel in sels
 				set end of returnValue to id of sel
 			end repeat
-			
 		end tell
 		return returnValue
 	end getChildren:

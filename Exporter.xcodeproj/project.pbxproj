@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE5960D11A3FE48A00CB9DD2 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5960CE1A3FE48A00CB9DD2 /* DataSource.m */; };
+		AE5960D21A3FE48A00CB9DD2 /* ApertureItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5960D01A3FE48A00CB9DD2 /* ApertureItem.m */; };
 		AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AED964581A3AA4F000E72772 /* AppDelegate.m */; };
 		AED9645B1A3AA4F000E72772 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AED9645A1A3AA4F000E72772 /* main.m */; };
 		AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AED9645C1A3AA4F000E72772 /* Images.xcassets */; };
@@ -27,6 +29,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AE5960CD1A3FE48A00CB9DD2 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		AE5960CE1A3FE48A00CB9DD2 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
+		AE5960CF1A3FE48A00CB9DD2 /* ApertureItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApertureItem.h; sourceTree = "<group>"; };
+		AE5960D01A3FE48A00CB9DD2 /* ApertureItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApertureItem.m; sourceTree = "<group>"; };
 		AED964521A3AA4F000E72772 /* Exporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED964561A3AA4F000E72772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED964571A3AA4F000E72772 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -86,6 +92,10 @@
 				AED964581A3AA4F000E72772 /* AppDelegate.m */,
 				AED9645C1A3AA4F000E72772 /* Images.xcassets */,
 				AED9645E1A3AA4F000E72772 /* MainMenu.xib */,
+				AE5960CD1A3FE48A00CB9DD2 /* DataSource.h */,
+				AE5960CE1A3FE48A00CB9DD2 /* DataSource.m */,
+				AE5960CF1A3FE48A00CB9DD2 /* ApertureItem.h */,
+				AE5960D01A3FE48A00CB9DD2 /* ApertureItem.m */,
 				AED964551A3AA4F000E72772 /* Supporting Files */,
 			);
 			path = Exporter;
@@ -219,7 +229,9 @@
 			files = (
 				AED9645B1A3AA4F000E72772 /* main.m in Sources */,
 				AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */,
+				AE5960D11A3FE48A00CB9DD2 /* DataSource.m in Sources */,
 				AED964781A3AB52100E72772 /* Aperture.applescript in Sources */,
+				AE5960D21A3FE48A00CB9DD2 /* ApertureItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +418,7 @@
 				AED964711A3AA4F100E72772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AED964721A3AA4F100E72772 /* Build configuration list for PBXNativeTarget "ExporterTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +427,7 @@
 				AED964741A3AA4F100E72772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

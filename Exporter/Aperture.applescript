@@ -19,7 +19,8 @@ script Aperture
 		tell application "Aperture"
 			set sels to every folder whose parent's name is "Aperture Library"
 			repeat with sel in sels
-				set end of returnValue to id of sel
+				set selItem to {apertureID:(id of sel), apertureName:(name of sel)}
+				set end of returnValue to selItem
 			end repeat
 		end tell
 		return returnValue
@@ -32,7 +33,8 @@ script Aperture
 		tell application "Aperture"
 			set sels to every folder whose parent's id is folderID
 			repeat with sel in sels
-				set end of returnValue to id of sel
+				set selItem to {apertureID:(id of sel), apertureName:(name of sel)}
+				set end of returnValue to selItem
 			end repeat
 		end tell
 		return returnValue

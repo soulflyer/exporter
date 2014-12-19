@@ -13,9 +13,11 @@
 // declare methods here
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
+//-(NSArray  *)topLevelFolders;
 -(NSArray  *)topLevelFolders;
 -(NSString *)getFolderID;
 -(NSString *)getFolderName:(NSString*)folderID;
+//-(NSArray  *)getChildren:(NSString*)folderID;
 -(NSArray  *)getChildren:(NSString*)folderID;
 @end
 
@@ -32,9 +34,13 @@
   NSString *blah = [NSClassFromString(@"Aperture") libraryPath];
   NSLog(@"LibPath from class method: %@",blah);
                   
-  //NSArray *topFolders=[aperture topLevelFolders];
-  //NSLog(@"topFolders: %@",topFolders);
+  NSArray *topFolders=[aperture topLevelFolders];
+  NSLog(@"topFolders: %@",topFolders);
   //NSString *folderID=[aperture getFolderID];
+  //NSString  *folderID=topFolders[2];
+  //NSArray *charray=[aperture getChildrenRecords:folderID];
+  //NSLog(@"getChildrenRecords: %@",charray);
+  
   //NSString  *folderID=topFolders[2];
   //NSLog(@"FolderID: %@",folderID);
   //NSString *folderName=[aperture getFolderName:folderID];

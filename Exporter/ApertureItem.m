@@ -13,9 +13,11 @@
 // declare methods here
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
+//-(NSArray  *)topLevelFolders;
 -(NSArray  *)topLevelFolders;
 -(NSString *)getFolderID;
 -(NSString *)getFolderName:(NSString*)folderID;
+//-(NSArray  *)getChildren:(NSString*)folderID;
 -(NSArray  *)getChildren:(NSString*)folderID;
 @end
 
@@ -54,7 +56,6 @@ static ApertureItem *rootItem = nil;
 - (NSArray *)children {
   
   if (children == NULL) {
-    //NSLog(@"starting ApertureItem children with apertureID %@",[self apertureID]);
     Aperture *aperture = [[NSClassFromString(@"Aperture") alloc] init];
     NSArray *array;
     if ([[self apertureID]  isEqual: @"root"]) {
@@ -65,9 +66,10 @@ static ApertureItem *rootItem = nil;
     NSInteger cnt, numChildren = [array count];
     children = [[NSMutableArray alloc] initWithCapacity:numChildren];
     for (cnt = 0; cnt < numChildren; cnt++) {
-      NSString *an = [aperture getFolderName:[array objectAtIndex:cnt]];
-      NSLog(@"an %@",an);
-      ApertureItem *item = [[ApertureItem alloc] initWithID:[array objectAtIndex:cnt] name:an  parent:self];
+      NSString *an = [[array objectAtIndex:cnt] valueForKey:@"apertureName"];
+      NSString *apid = [[array objectAtIndex:cnt] valueForKey:@"apertureID"];
+      //NSLog(@"an %@",an);
+      ApertureItem *item = [[ApertureItem alloc] initWithID:apid name:an  parent:self];
       [children addObject:item];
     }
   }

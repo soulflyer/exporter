@@ -13,11 +13,9 @@
 // declare methods here
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
-//-(NSArray  *)topLevelFolders;
 -(NSArray  *)topLevelFolders;
 -(NSString *)getFolderID;
 -(NSString *)getFolderName:(NSString*)folderID;
-//-(NSArray  *)getChildren:(NSString*)folderID;
 -(NSArray  *)getChildren:(NSString*)folderID;
 @end
 
@@ -36,6 +34,7 @@
                   
   NSArray *topFolders=[aperture topLevelFolders];
   NSLog(@"topFolders: %@",topFolders);
+  [outlineView expandItem:[outlineView itemAtRow:0]];
   //NSString *folderID=[aperture getFolderID];
   //NSString  *folderID=topFolders[2];
   //NSArray *charray=[aperture getChildrenRecords:folderID];

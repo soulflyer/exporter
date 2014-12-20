@@ -17,9 +17,11 @@ script Aperture
 	on topLevelFolders()
 		set returnValue to {}
 		tell application "Aperture"
+			log "hello"
 			set sels to every folder whose parent's name is "Aperture Library"
 			repeat with sel in sels
-				set selItem to {apertureID:(id of sel), apertureName:(name of sel)}
+				log name of sel
+				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
 				set end of returnValue to selItem
 			end repeat
 		end tell
@@ -28,12 +30,17 @@ script Aperture
 	
 	on getChildren:folderID
 		set folderID to folderID as text
-		--log folderID
+		log folderID
 		set returnValue to {}
 		tell application "Aperture"
 			set sels to every folder whose parent's id is folderID
 			repeat with sel in sels
-				set selItem to {apertureID:(id of sel), apertureName:(name of sel)}
+				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
+				set end of returnValue to selItem
+			end repeat
+			set sels to every project whose parent's id is folderID
+			repeat with sel in sels
+				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"true"}
 				set end of returnValue to selItem
 			end repeat
 		end tell

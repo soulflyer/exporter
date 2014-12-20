@@ -16,6 +16,7 @@
   NSString *itemType;
   NSString *apertureID;
   NSString *apertureName;
+  BOOL leaf;
 }
 
 + (ApertureItem *)rootItem;
@@ -23,5 +24,7 @@
 - (ApertureItem *)childAtIndex:(NSInteger)n;	// Invalid to call on leaf nodes
 - (NSString *)apertureID;
 - (NSString *)apertureName;
+- (NSMutableArray *)children;
+- (BOOL)leaf;
 
 @end

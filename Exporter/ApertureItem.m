@@ -13,11 +13,9 @@
 // declare methods here
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
-//-(NSArray  *)topLevelFolders;
 -(NSArray  *)topLevelFolders;
 -(NSString *)getFolderID;
 -(NSString *)getFolderName:(NSString*)folderID;
-//-(NSArray  *)getChildren:(NSString*)folderID;
 -(NSArray  *)getChildren:(NSString*)folderID;
 @end
 
@@ -26,7 +24,9 @@
 
 static ApertureItem *rootItem = nil;
 
-#define IsALeafNode ((id)-1)
+- (BOOL)leaf{
+  return leaf;
+}
 
 - (id)initWithID:(NSString *)apID parent:(ApertureItem *)obj {
   if (self = [super init]) {
@@ -44,8 +44,24 @@ static ApertureItem *rootItem = nil;
   }
   return self;
 }
+
+- (id)initWithID:(NSString *)apID name:(NSString*)apName parent:(ApertureItem *)obj leaf:(NSString *)leafNode {
+  if (self = [super init]) {
+    apertureID = apID;
+    parent = obj;
+    apertureName = apName;
+    if ([leafNode  isEqual: @"true"]) {
+      leaf = true;
+    }else{
+      leaf = false;
+    }
+    //leaf = leafNode;
+  }
+  return self;
+}
+
 + (ApertureItem *)rootItem {
-   if (rootItem == nil) rootItem = [[ApertureItem alloc] initWithID:@"root" parent:nil];
+  if (rootItem == nil) rootItem = [[ApertureItem alloc] initWithID:@"root" name:@"Aperture Library" parent:nil leaf:@"false"];
    return rootItem;       
 }
 
@@ -56,21 +72,27 @@ static ApertureItem *rootItem = nil;
 - (NSArray *)children {
   
   if (children == NULL) {
-    Aperture *aperture = [[NSClassFromString(@"Aperture") alloc] init];
-    NSArray *array;
-    if ([[self apertureID]  isEqual: @"root"]) {
-      array = [aperture topLevelFolders];
+    if ([self leaf]) {
+      NSLog(@"a leaf node");
+      children = NULL;
     }else{
-      array = [aperture getChildren:[self apertureID]];
-    }
-    NSInteger cnt, numChildren = [array count];
-    children = [[NSMutableArray alloc] initWithCapacity:numChildren];
-    for (cnt = 0; cnt < numChildren; cnt++) {
-      NSString *an = [[array objectAtIndex:cnt] valueForKey:@"apertureName"];
-      NSString *apid = [[array objectAtIndex:cnt] valueForKey:@"apertureID"];
-      //NSLog(@"an %@",an);
-      ApertureItem *item = [[ApertureItem alloc] initWithID:apid name:an  parent:self];
-      [children addObject:item];
+      Aperture *aperture = [[NSClassFromString(@"Aperture") alloc] init];
+      NSArray *array;
+      if ([[self apertureID]  isEqual: @"root"]) {
+        array = [aperture topLevelFolders];
+      }else{
+        array = [aperture getChildren:[self apertureID]];
+      }
+      NSInteger cnt, numChildren = [array count];
+      children = [[NSMutableArray alloc] initWithCapacity:numChildren];
+      for (cnt = 0; cnt < numChildren; cnt++) {
+        NSString *an = [[array objectAtIndex:cnt] valueForKey:@"apertureName"];
+        NSString *apid = [[array objectAtIndex:cnt] valueForKey:@"apertureID"];
+        NSString *ano = [[array objectAtIndex:cnt] valueForKey:@"leaf"];
+        //NSLog(@"an %@",an);
+        ApertureItem *item = [[ApertureItem alloc] initWithID:apid name:an  parent:self leaf:ano];
+        [children addObject:item];
+      }
     }
   }
   return children;

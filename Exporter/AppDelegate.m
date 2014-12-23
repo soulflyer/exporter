@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "TreeNode.h"
 @class Aperture;
 
 @interface Aperture:NSObject
@@ -14,6 +15,8 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)topLevelFolders;
+-(NSArray  *)getAllProjects;
+
 -(NSString *)getFolderID;
 -(NSString *)getFolderName:(NSString*)folderID;
 -(NSArray  *)getChildren:(NSString*)folderID;
@@ -48,5 +51,47 @@
   //NSLog(@"%@",childrenArray);
   
 }
+
+
+- (void)awakeFromNib{
+  aperture = [[NSClassFromString(@"Aperture") alloc] init];
+  [treeController setContent:[self generateApertureTree:[aperture getAllProjects]]];
+  [outlineView reloadData];
+}
+
+-(NSArray *)generateApertureTree:(NSArray *)apertureData {
+  //  apertureData is an array of Dictionaries representing each year
+  //  each year dictionary contains a yearName and an array of dictionaries representing months
+  //  each month dictionary contains a name and an array of dictionaries representing projects
+  //  ie:
+  //
+  //  NSArray *ar = [aperture getAllProjects];
+  //  NSArray *aYear = ar[0];
+  //  NSArray *aMonth = [aYear valueForKey:@"months"][2];
+  //  NSDictionary *aProject = [aMonth valueForKey:@"projectNames"][3];
+  //  NSLog(@"%@",aProject);
+  //
+  //  will show the 4th project of the 3rd month of the first year
+  
+  NSTreeNode *yearNode;
+  NSTreeNode *monthNode;
+  NSTreeNode *projectNode;
+  NSMutableArray *rootNodes = [NSMutableArray array];
+  for (id year in apertureData) {
+    yearNode = [ TreeNode makeNode:[year valueForKey:@"yearName"]];
+    for (id month in [year valueForKey:@"months"]){
+      monthNode = [TreeNode makeNode:[month valueForKey:@"monthName"]];
+      for (id project in [month valueForKey:@"projectNames"]){
+        projectNode = [TreeNode makeNode:[project valueForKey:@"projectName"]];
+        [[monthNode mutableChildNodes] addObject:projectNode];
+      }
+      [[yearNode mutableChildNodes] addObject:monthNode];
+    }
+    [rootNodes addObject:yearNode];
+  }
+  return rootNodes;
+}
+
+
 
 @end

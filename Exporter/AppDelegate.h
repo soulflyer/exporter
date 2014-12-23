@@ -12,6 +12,7 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate>{
   Aperture *aperture;
   IBOutlet NSOutlineView *outlineView;
+  IBOutlet NSTreeController *treeController;
 }
 
 

@@ -14,12 +14,16 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
-                <outlet property="outlineView" destination="UFY-zL-NVj" id="R8t-PD-Rng"/>
+                <outlet property="treeController" destination="aIl-ic-M7M" id="obh-Pn-MkE"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
-        <customObject id="8bY-I6-xjf" userLabel="DataSource" customClass="DataSource"/>
+        <treeController childrenKeyPath="childNodes" id="aIl-ic-M7M">
+            <connections>
+                <outlet property="content" destination="Voe-Tx-rLC" id="avh-B2-n7A"/>
+            </connections>
+        </treeController>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
                 <menuItem title="Exporter" id="1Xt-HY-uBw">
@@ -703,12 +707,11 @@
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.commandName" id="Eh1-L0-sRA"/>
+                                            </connections>
                                         </tableColumn>
                                     </tableColumns>
-                                    <connections>
-                                        <outlet property="dataSource" destination="8bY-I6-xjf" id="cZO-TL-wXX"/>
-                                        <outlet property="delegate" destination="8bY-I6-xjf" id="Bxq-fz-epA"/>
-                                    </connections>
                                 </outlineView>
                             </subviews>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

@@ -708,7 +708,7 @@
                                             </textFieldCell>
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <connections>
-                                                <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.commandName" id="Eh1-L0-sRA"/>
+                                                <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.entityName" id="j80-L5-74w"/>
                                             </connections>
                                         </tableColumn>
                                     </tableColumns>
@@ -717,7 +717,7 @@
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="7Ml-Rf-bAY">
-                            <rect key="frame" x="1" y="118.81927132606506" width="237.5" height="15"/>
+                            <rect key="frame" x="1" y="118.81927132606506" width="238" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="UH7-ht-Lnj">

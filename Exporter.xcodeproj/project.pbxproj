@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AE59613F1A494D7500CB9DD2 /* TreeNode.m */; };
+		AE5961461A496A9900CB9DD2 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961451A496A9900CB9DD2 /* Project.m */; };
+		AE5961581A4A726400CB9DD2 /* ProjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961571A4A726400CB9DD2 /* ProjectTest.m */; };
 		AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AED964581A3AA4F000E72772 /* AppDelegate.m */; };
 		AED9645B1A3AA4F000E72772 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AED9645A1A3AA4F000E72772 /* main.m */; };
 		AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AED9645C1A3AA4F000E72772 /* Images.xcassets */; };
@@ -30,6 +32,10 @@
 /* Begin PBXFileReference section */
 		AE59613E1A494D7500CB9DD2 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
 		AE59613F1A494D7500CB9DD2 /* TreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TreeNode.m; sourceTree = "<group>"; };
+		AE5961441A496A9900CB9DD2 /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Project.h; path = ../Project.h; sourceTree = "<group>"; };
+		AE5961451A496A9900CB9DD2 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Project.m; path = ../Project.m; sourceTree = "<group>"; };
+		AE5961561A4A726400CB9DD2 /* ProjectTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTest.h; sourceTree = "<group>"; };
+		AE5961571A4A726400CB9DD2 /* ProjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTest.m; sourceTree = "<group>"; };
 		AED964521A3AA4F000E72772 /* Exporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED964561A3AA4F000E72772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED964571A3AA4F000E72772 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -85,6 +91,8 @@
 		AED964541A3AA4F000E72772 /* Exporter */ = {
 			isa = PBXGroup;
 			children = (
+				AE5961441A496A9900CB9DD2 /* Project.h */,
+				AE5961451A496A9900CB9DD2 /* Project.m */,
 				AED964571A3AA4F000E72772 /* AppDelegate.h */,
 				AED964581A3AA4F000E72772 /* AppDelegate.m */,
 				AED9645C1A3AA4F000E72772 /* Images.xcassets */,
@@ -109,6 +117,8 @@
 		AED964681A3AA4F100E72772 /* ExporterTests */ = {
 			isa = PBXGroup;
 			children = (
+				AE5961561A4A726400CB9DD2 /* ProjectTest.h */,
+				AE5961571A4A726400CB9DD2 /* ProjectTest.m */,
 				AED9646B1A3AA4F100E72772 /* ExporterTests.m */,
 				AED964691A3AA4F100E72772 /* Supporting Files */,
 			);
@@ -225,6 +235,7 @@
 				AED9645B1A3AA4F000E72772 /* main.m in Sources */,
 				AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */,
 				AED964781A3AB52100E72772 /* Aperture.applescript in Sources */,
+				AE5961461A496A9900CB9DD2 /* Project.m in Sources */,
 				AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -234,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AED9646C1A3AA4F100E72772 /* ExporterTests.m in Sources */,
+				AE5961581A4A726400CB9DD2 /* ProjectTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

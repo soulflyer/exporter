@@ -10,9 +10,9 @@
 @import AppKit;
 
 @interface TreeNode : NSObject{
-  NSString *commandName;
+  NSString *entityName;
 }
-@property NSString * commandName;
+@property NSString * entityName;
 + (NSTreeNode *) makeNode:(NSString *)nodeName;
 
 @end

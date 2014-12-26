@@ -15,62 +15,26 @@ script Aperture
 		end if
 	end libraryPath
 	
-	on topLevelFolders()
-		set returnValue to {}
-		tell application "Aperture"
-			--tell library "Aperture Library"
-			--log "hello"
-			set sels to every folder whose parent's name is "Aperture Library"
-      set sels to {"2013" , "2014"}
-			repeat with sel in sels
-        tell current application
-				log "sel: " & sel
-        end tell
-        set sel to (folder sel)
-				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
-				set end of returnValue to selItem
-			end repeat
-			--end tell
-		end tell
-		return returnValue
-	end topLevelFolders
-	
-	on getChildren:folderID
-		set folderID to folderID as text
-		log "folderid: " & folderID
-		set returnValue to {}
-		tell application "Aperture"
-			set sels to every folder whose parent's id is folderID
-			repeat with sel in sels
-				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
-				set end of returnValue to selItem
-			end repeat
-			set sels to every project whose parent's id is folderID
-			repeat with sel in sels
-				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"true"}
-				set end of returnValue to selItem
-			end repeat
-		end tell
-		return returnValue
-	end getChildren:
-	
-	on getFolderID()
-		tell application "Aperture"
-			set sels to every folder whose parent's name is "Aperture Library"
-			set sel to first item of sels
-		end tell
-		set returnVal to id of sel
-		return returnVal
-	end getFolderID
-	
-	on getFolderName:folderID
-		set folderID to folderID as text
-		tell application "Aperture"
-			set f to every folder whose id is folderID
-			return name of first item of f
-		end tell
-	end getFolderName:
-  
+--	on topLevelFolders()
+--		set returnValue to {}
+--		tell application "Aperture"
+--			--tell library "Aperture Library"
+--			--log "hello"
+--			set sels to every folder whose parent's name is "Aperture Library"
+--      set sels to {"2013" , "2014"}
+--			repeat with sel in sels
+--        tell current application
+--				log "sel: " & sel
+--        end tell
+--        set sel to (folder sel)
+--				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
+--				set end of returnValue to selItem
+--			end repeat
+--			--end tell
+--		end tell
+--		return returnValue
+--	end topLevelFolders
+--	
   -----------------------------------------------------------------------------------------------------------------------
   on getAllProjects()
     set allYearRecords to {}

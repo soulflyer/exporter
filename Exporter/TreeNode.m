@@ -11,10 +11,10 @@
 
 
 @implementation TreeNode
-@synthesize commandName;
+@synthesize entityName;
 + (NSTreeNode *) makeNode:(NSString *)nodeName {
   TreeNode *treeNode = [[TreeNode alloc]init];
-  treeNode.commandName = nodeName;
+  treeNode.entityName = nodeName;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
 

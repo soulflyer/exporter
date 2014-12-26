@@ -8,18 +8,14 @@
 
 #import "AppDelegate.h"
 #import "TreeNode.h"
+#import "Project.h"
 @class Aperture;
 
 @interface Aperture:NSObject
 // declare methods here
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
--(NSArray  *)topLevelFolders;
 -(NSArray  *)getAllProjects;
-
--(NSString *)getFolderID;
--(NSString *)getFolderName:(NSString*)folderID;
--(NSArray  *)getChildren:(NSString*)folderID;
 @end
 
 @interface AppDelegate ()
@@ -29,31 +25,30 @@
 
 @implementation AppDelegate
 
+#define defaultPhotosPath @"~/Pictures"
+#define photosPathKey @"photosPath"
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   // Insert code here to initialize your application
-  aperture = [[NSClassFromString(@"Aperture") alloc] init];
-  NSString *blah = [NSClassFromString(@"Aperture") libraryPath];
-  NSLog(@"LibPath from class method: %@",blah);
-                  
-  NSArray *topFolders=[aperture topLevelFolders];
-  NSLog(@"topFolders: %@",topFolders);
-  [outlineView expandItem:[outlineView itemAtRow:0]];
-  //NSString *folderID=[aperture getFolderID];
-  //NSString  *folderID=topFolders[2];
-  //NSArray *charray=[aperture getChildrenRecords:folderID];
-  //NSLog(@"getChildrenRecords: %@",charray);
-  
-  //NSString  *folderID=topFolders[2];
-  //NSLog(@"FolderID: %@",folderID);
-  //NSString *folderName=[aperture getFolderName:folderID];
-  //NSLog(@"Folder: %@",folderName);
-  //NSArray *childrenArray = [aperture getChildren:folderID];
-  //NSLog(@"%@",childrenArray);
-  
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *photosPath = [defaults stringForKey:photosPathKey];
+  NSLog(@"photosPath: %@",photosPath);
+  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
+  NSLog(@"Photos URL again : %@",photosURL);
 }
 
-
 - (void)awakeFromNib{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *photosPath = [defaults stringForKey:photosPathKey];
+  if (photosPath == nil) {
+    NSLog(@"photospath was nil");
+    photosPath = defaultPhotosPath;
+    [defaults setObject:photosPath forKey:photosPathKey];
+  }
+  [defaults synchronize];
+  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
+  NSLog(@"Photos URL: %@",photosURL);
+  
   aperture = [[NSClassFromString(@"Aperture") alloc] init];
   [treeController setContent:[self generateApertureTree:[aperture getAllProjects]]];
   [outlineView reloadData];
@@ -91,7 +86,5 @@
   }
   return rootNodes;
 }
-
-
 
 @end

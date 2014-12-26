@@ -20,5 +20,5 @@
 - (NSDate   *)firstExportDate;
 - (NSDate   *)lastExportDate;
 - (NSString *)path;
-- (NSURL    *)fullPath;
+- (NSString *)fullPath;
 @end

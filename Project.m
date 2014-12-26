@@ -43,10 +43,17 @@
   return [NSString stringWithFormat:@"/%@/%@/%@",[self year],[self month],[self name]];
 }
 
-- (NSURL *)fullPath{
+//- (NSURL *)fullPath{
+//  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+//  NSLog(@"%@",[NSString stringWithFormat:@"default path %@",[def stringForKey:@"photosPath"]]);
+//  return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"photosPath"],[self path]]];
+//}
+
+- (NSString *)fullPath{
   NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
   NSLog(@"%@",[NSString stringWithFormat:@"default path %@",[def stringForKey:@"photosPath"]]);
-  return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"photosPath"],[self path]]];
+  return [NSString stringWithFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"photosPath"],[self path]];
 }
+
 
 @end

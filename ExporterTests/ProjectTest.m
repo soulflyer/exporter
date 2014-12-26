@@ -31,10 +31,9 @@
 
 -(void)testFullPath {
   Project *project = [Project projectWithName:@"testProjectName" month:@"testMonth" year:@"testYear"];
-  NSURL *projectFullPath= [project fullPath];
-  NSString * fullPathString = [[projectFullPath relativeString] stringByStandardizingPath];
-  NSLog(@"Test fullPathString is: %@",fullPathString);
-  XCTAssertEqualObjects(fullPathString,  @"/Users/iain/Photos/testYear/testMonth/testProjectName");
+  NSString *projectFullPath= [[project fullPath] stringByStandardizingPath];
+  NSLog(@"Test fullPathString is: %@",projectFullPath);
+  XCTAssertEqualObjects(projectFullPath,  @"/Users/iain/Photos/testYear/testMonth/testProjectName");
 }
 
 @end

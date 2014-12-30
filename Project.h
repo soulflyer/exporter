@@ -21,4 +21,5 @@
 - (NSDate   *)lastExportDate;
 - (NSString *)path;
 - (NSString *)fullPath;
+- (NSString *)monthNumber;
 @end

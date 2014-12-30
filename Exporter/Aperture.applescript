@@ -39,12 +39,9 @@ script Aperture
 	on getAllProjects()
 		set allYearRecords to {}
 		set newItem to {}
-		log "TopLevelFolders: " & my topFolders & space & class of topFolders
 		set defaults to current application's NSUserDefaults's standardUserDefaults()
 		set thing to (defaults's objectForKey:"topFolders") as string
-		log "Default Value " & thing & space & class of thing
 		set things to my splitString(thing, ",")
-		log "things " & things & space & (class of things) & " 1st: " & first item of things & " 2nd: " & second item of things
     set my topFolders to things
 		tell application "Aperture"
 			repeat with yearName in my topFolders

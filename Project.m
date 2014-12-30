@@ -18,9 +18,41 @@
   return pr;
 }
 
+- (NSString *)monthNumber{
+  NSString *lowerMonth = [[[self month] lowercaseString] substringToIndex:3];
+  if ([lowerMonth isEqual:@"jan"]) {
+    return @"01";
+  } else if ([lowerMonth isEqual:@"feb"]) {
+    return @"02";
+  }else if ([lowerMonth isEqual:@"mar"]) {
+    return @"03";
+  }else if ([lowerMonth isEqual:@"apr"]) {
+    return @"04";
+  }else if ([lowerMonth isEqual:@"may"]) {
+    return @"05";
+  }else if ([lowerMonth isEqual:@"jun"]) {
+    return @"06";
+  }else if ([lowerMonth isEqual:@"jul"]) {
+    return @"07";
+  }else if ([lowerMonth isEqual:@"aug"]) {
+    return @"08";
+  }else if ([lowerMonth isEqual:@"sep"]) {
+    return @"09";
+  }else if ([lowerMonth isEqual:@"oct"]) {
+    return @"10";
+  }else if ([lowerMonth isEqual:@"nov"]) {
+    return @"11";
+  }
+  return @"12";
+}
+
 - (BOOL)exported{
   //check if notes.txt exists for the project
-  return true;
+  NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
+  NSString *filePath = [[NSString stringWithFormat:@"%@%@/notes.txt",[defaults objectForKey:@"photosPath"],[self path]] stringByStandardizingPath];
+  NSLog(@"Checking for %@",filePath);
+  BOOL exists=[[NSFileManager defaultManager] fileExistsAtPath:filePath];
+  return exists;
 }
 
 - (NSDate *)firstExportDate{
@@ -40,7 +72,7 @@
 }
 
 - (NSString *)path{
-  return [NSString stringWithFormat:@"/%@/%@/%@",[self year],[self month],[self name]];
+  return [NSString stringWithFormat:@"/%@/%@/%@",[self year],[self monthNumber],[self name]];
 }
 
 //- (NSURL *)fullPath{

@@ -10,6 +10,8 @@
 		AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AE59613F1A494D7500CB9DD2 /* TreeNode.m */; };
 		AE5961461A496A9900CB9DD2 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961451A496A9900CB9DD2 /* Project.m */; };
 		AE5961581A4A726400CB9DD2 /* ProjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961571A4A726400CB9DD2 /* ProjectTest.m */; };
+		AE59615A1A4DB10B00CB9DD2 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE5961591A4DB10B00CB9DD2 /* Preferences.xib */; };
+		AE59615D1A4F135300CB9DD2 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */; };
 		AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AED964581A3AA4F000E72772 /* AppDelegate.m */; };
 		AED9645B1A3AA4F000E72772 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AED9645A1A3AA4F000E72772 /* main.m */; };
 		AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AED9645C1A3AA4F000E72772 /* Images.xcassets */; };
@@ -36,6 +38,9 @@
 		AE5961451A496A9900CB9DD2 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Project.m; path = ../Project.m; sourceTree = "<group>"; };
 		AE5961561A4A726400CB9DD2 /* ProjectTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTest.h; sourceTree = "<group>"; };
 		AE5961571A4A726400CB9DD2 /* ProjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTest.m; sourceTree = "<group>"; };
+		AE5961591A4DB10B00CB9DD2 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Preferences.xib; path = ../Preferences.xib; sourceTree = "<group>"; };
+		AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
+		AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		AED964521A3AA4F000E72772 /* Exporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED964561A3AA4F000E72772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED964571A3AA4F000E72772 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -96,7 +101,10 @@
 				AED964571A3AA4F000E72772 /* AppDelegate.h */,
 				AED964581A3AA4F000E72772 /* AppDelegate.m */,
 				AED9645C1A3AA4F000E72772 /* Images.xcassets */,
+				AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */,
+				AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */,
 				AED9645E1A3AA4F000E72772 /* MainMenu.xib */,
+				AE5961591A4DB10B00CB9DD2 /* Preferences.xib */,
 				AE59613E1A494D7500CB9DD2 /* TreeNode.h */,
 				AE59613F1A494D7500CB9DD2 /* TreeNode.m */,
 				AED964551A3AA4F000E72772 /* Supporting Files */,
@@ -214,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */,
+				AE59615A1A4DB10B00CB9DD2 /* Preferences.xib in Resources */,
 				AED964601A3AA4F000E72772 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -236,6 +245,7 @@
 				AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */,
 				AED964781A3AB52100E72772 /* Aperture.applescript in Sources */,
 				AE5961461A496A9900CB9DD2 /* Project.m in Sources */,
+				AE59615D1A4F135300CB9DD2 /* PreferencesWindowController.m in Sources */,
 				AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

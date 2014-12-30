@@ -1,6 +1,6 @@
 script Aperture
 	property parent : class "NSObject"
-  property topFolders : {"2013", "2014"}
+	property topFolders : {}
 	
 	on libraryPath()
 		tell application "System Events" to set p_libPath to value of property list item "LibraryPath" of property list file ((path to preferences as Unicode text) & "com.apple.Aperture.plist")
@@ -15,54 +15,70 @@ script Aperture
 		end if
 	end libraryPath
 	
---	on topLevelFolders()
---		set returnValue to {}
---		tell application "Aperture"
---			--tell library "Aperture Library"
---			--log "hello"
---			set sels to every folder whose parent's name is "Aperture Library"
---      set sels to {"2013" , "2014"}
---			repeat with sel in sels
---        tell current application
---				log "sel: " & sel
---        end tell
---        set sel to (folder sel)
---				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
---				set end of returnValue to selItem
---			end repeat
---			--end tell
---		end tell
---		return returnValue
---	end topLevelFolders
---	
-  -----------------------------------------------------------------------------------------------------------------------
-  on getAllProjects()
-    set allYearRecords to {}
-    set newItem to {}
-    tell application "Aperture"
-      repeat with yearName in my topFolders
-        tell (folder yearName)
-          set yearMonths to {}
-          set allMonths to every folder
-          repeat with thisMonth in allMonths
-            set monthName to name of thisMonth
-            tell thisMonth
-              set monthProjects to {}
-              set allProjects to every project
-              repeat with thisProject in allProjects
-                set newItem to {padding:"padding", projectName:(name of thisProject)}
-                set end of monthProjects to newItem
-              end repeat
-            end tell
-            set monthRecord to {monthName:(name of thisMonth), projectNames:monthProjects}
-            set end of yearMonths to monthRecord
-          end repeat
-          set yearRecord to {yearName:yearName, |months|:yearMonths}
-          set end of allYearRecords to yearRecord
-        end tell
-      end repeat
-    end tell
-    return allYearRecords
-  end getAllProjects
-  
+	--	on topLevelFolders()
+	--		set returnValue to {}
+	--		tell application "Aperture"
+	--			--tell library "Aperture Library"
+	--			--log "hello"
+	--			set sels to every folder whose parent's name is "Aperture Library"
+	--      set sels to {"2013" , "2014"}
+	--			repeat with sel in sels
+	--        tell current application
+	--				log "sel: " & sel
+	--        end tell
+	--        set sel to (folder sel)
+	--				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
+	--				set end of returnValue to selItem
+	--			end repeat
+	--			--end tell
+	--		end tell
+	--		return returnValue
+	--	end topLevelFolders
+	--	
+	-----------------------------------------------------------------------------------------------------------------------
+	on getAllProjects()
+		set allYearRecords to {}
+		set newItem to {}
+		log "TopLevelFolders: " & my topFolders & space & class of topFolders
+		set defaults to current application's NSUserDefaults's standardUserDefaults()
+		set thing to (defaults's objectForKey:"topFolders") as string
+		log "Default Value " & thing & space & class of thing
+		set things to my splitString(thing, ",")
+		log "things " & things & space & (class of things) & " 1st: " & first item of things & " 2nd: " & second item of things
+    set my topFolders to things
+		tell application "Aperture"
+			repeat with yearName in my topFolders
+				tell (folder yearName)
+					set yearMonths to {}
+					set allMonths to every folder
+					repeat with thisMonth in allMonths
+						set monthName to name of thisMonth
+						tell thisMonth
+							set monthProjects to {}
+							set allProjects to every project
+							repeat with thisProject in allProjects
+								set newItem to {padding:"padding", projectName:(name of thisProject)}
+								set end of monthProjects to newItem
+							end repeat
+						end tell
+						set monthRecord to {monthName:(name of thisMonth), projectNames:monthProjects}
+						set end of yearMonths to monthRecord
+					end repeat
+					set yearRecord to {yearName:yearName, |months|:yearMonths}
+					set end of allYearRecords to yearRecord
+				end tell
+			end repeat
+		end tell
+		return allYearRecords
+	end getAllProjects
+	
+	to splitString(aString, delimiter)
+		set retVal to {}
+		set prevDelimiter to AppleScript's text item delimiters
+		set AppleScript's text item delimiters to {delimiter}
+		set retVal to every text item of aString
+		set AppleScript's text item delimiters to prevDelimiter
+		return retVal
+	end splitString
+	
 end script

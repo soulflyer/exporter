@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "TreeNode.h"
 #import "Project.h"
+#import "PreferencesWindowController.h"
 @class Aperture;
 
 @interface Aperture:NSObject
@@ -27,6 +28,8 @@
 
 #define defaultPhotosPath @"~/Pictures"
 #define photosPathKey @"photosPath"
+#define defaultTopFolders @"2014,2013"
+#define topFoldersKey @"topFolders"
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   // Insert code here to initialize your application
@@ -35,6 +38,8 @@
   NSLog(@"photosPath: %@",photosPath);
   NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
   NSLog(@"Photos URL again : %@",photosURL);
+  NSString *topFolders = [defaults objectForKey:topFoldersKey];
+  NSLog(@"%@",topFolders);
 }
 
 - (void)awakeFromNib{
@@ -45,11 +50,18 @@
     photosPath = defaultPhotosPath;
     [defaults setObject:photosPath forKey:photosPathKey];
   }
+  NSString *topFolders = [defaults objectForKey:topFoldersKey];
+  if (topFolders == nil) {
+    NSLog(@"topFolders was nil");
+    topFolders = defaultTopFolders;
+    [defaults setObject:topFolders forKey:topFoldersKey];
+  }
   [defaults synchronize];
   NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
   NSLog(@"Photos URL: %@",photosURL);
   
   aperture = [[NSClassFromString(@"Aperture") alloc] init];
+  
   [treeController setContent:[self generateApertureTree:[aperture getAllProjects]]];
   [outlineView reloadData];
 }
@@ -85,6 +97,13 @@
     [rootNodes addObject:yearNode];
   }
   return rootNodes;
+}
+
+- (IBAction)showPreferences:(id)sender {
+  preferencesWindowController = [[PreferencesWindowController alloc] init];
+  //[preferencesWindowController showWindow:sender];
+  [[preferencesWindowController window] makeMainWindow];
+  [[preferencesWindowController window] makeKeyWindow];
 }
 
 @end

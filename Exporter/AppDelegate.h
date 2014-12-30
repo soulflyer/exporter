@@ -7,12 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class Aperture;
+@class Aperture,PreferencesWindowController;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>{
   Aperture *aperture;
   IBOutlet NSOutlineView *outlineView;
   IBOutlet NSTreeController *treeController;
+  IBOutlet PreferencesWindowController *preferencesWindowController;
 }
 
 

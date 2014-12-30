@@ -85,11 +85,16 @@
   NSTreeNode *projectNode;
   NSMutableArray *rootNodes = [NSMutableArray array];
   for (id year in apertureData) {
-    yearNode = [ TreeNode makeNode:[year valueForKey:@"yearName"]];
+    NSString *yearName = [year valueForKey:@"yearName"];
+    yearNode = [ TreeNode makeNode:yearName];
     for (id month in [year valueForKey:@"months"]){
-      monthNode = [TreeNode makeNode:[month valueForKey:@"monthName"]];
+      NSString *monthName = [month valueForKey:@"monthName"];
+      monthNode = [TreeNode makeNode:monthName];
       for (id project in [month valueForKey:@"projectNames"]){
-        projectNode = [TreeNode makeNode:[project valueForKey:@"projectName"]];
+        NSString *projectName = [project valueForKey:@"projectName"];
+        Project *projectInstance = [Project projectWithName:projectName month:monthName year:yearName];
+        BOOL projectExported = [projectInstance exported];
+        projectNode = [TreeNode makeNode:projectName exported:projectExported];
         [[monthNode mutableChildNodes] addObject:projectNode];
       }
       [[yearNode mutableChildNodes] addObject:monthNode];

@@ -7,12 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Project.h"
 @import AppKit;
 
 @interface TreeNode : NSObject{
   NSString *entityName;
+  BOOL exported;
+  Project *project;
 }
 @property NSString * entityName;
+@property BOOL exported;
+@property Project* project;
 + (NSTreeNode *) makeNode:(NSString *)nodeName;
++ (NSTreeNode *) makeNode:(NSString *)nodeName exported:(BOOL)exported;
 
 @end

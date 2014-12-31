@@ -12,13 +12,19 @@
 
 @interface TreeNode : NSObject{
   NSString *entityName;
-  BOOL exported;
-  Project *project;
+  BOOL      exported;
+  NSDate   *firstExport;
+  NSDate   *lastExport;
+  //Project *project;
 }
+
 @property NSString * entityName;
 @property BOOL exported;
-@property Project* project;
+@property NSDate *firstExport;
+@property NSDate *lastExport;
+
 + (NSTreeNode *) makeNode:(NSString *)nodeName;
 + (NSTreeNode *) makeNode:(NSString *)nodeName exported:(BOOL)exported;
++ (NSTreeNode *) makeNode:(NSString *)nodeName exported:(BOOL)exported firstExport:(NSDate*)firstExport lastExport:(NSDate*)lastExport;
 
 @end

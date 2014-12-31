@@ -50,7 +50,7 @@
   //check if notes.txt exists for the project
   NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
   NSString *filePath = [[NSString stringWithFormat:@"%@%@/notes.txt",[defaults objectForKey:@"photosPath"],[self path]] stringByStandardizingPath];
-  NSLog(@"Checking for %@",filePath);
+  //NSLog(@"Checking for %@",filePath);
   BOOL exists=[[NSFileManager defaultManager] fileExistsAtPath:filePath];
   return exists;
 }
@@ -74,12 +74,6 @@
 - (NSString *)path{
   return [NSString stringWithFormat:@"/%@/%@/%@",[self year],[self monthNumber],[self name]];
 }
-
-//- (NSURL *)fullPath{
-//  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-//  NSLog(@"%@",[NSString stringWithFormat:@"default path %@",[def stringForKey:@"photosPath"]]);
-//  return [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"photosPath"],[self path]]];
-//}
 
 - (NSString *)fullPath{
   NSUserDefaults *def = [NSUserDefaults standardUserDefaults];

@@ -11,12 +11,12 @@
 
 
 @implementation TreeNode
-@synthesize entityName,exported,project;
+@synthesize entityName,exported;
 + (NSTreeNode *) makeNode:(NSString *)nodeName {
   TreeNode *treeNode = [[TreeNode alloc]init];
   treeNode.entityName = nodeName;
   treeNode.exported = NO;
-  treeNode.project = nil;
+  //treeNode.project = nil;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
 
@@ -24,7 +24,16 @@
   TreeNode *treeNode = [[TreeNode alloc]init];
   treeNode.entityName = nodeName;
   treeNode.exported = exported;
-  treeNode.project = nil;
+  //treeNode.project = nil;
+  return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
+}
+
++ (NSTreeNode *) makeNode:(NSString *)nodeName exported:(BOOL)exported firstExport:(NSDate*)firstExport lastExport:(NSDate*)lastExport{
+  TreeNode *treeNode = [[TreeNode alloc]init];
+  treeNode.entityName  = nodeName;
+  treeNode.exported    = exported;
+  treeNode.firstExport = firstExport;
+  treeNode.lastExport  = lastExport;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
 

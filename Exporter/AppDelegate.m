@@ -93,8 +93,10 @@
       for (id project in [month valueForKey:@"projectNames"]){
         NSString *projectName = [project valueForKey:@"projectName"];
         Project *projectInstance = [Project projectWithName:projectName month:monthName year:yearName];
-        BOOL projectExported = [projectInstance exported];
-        projectNode = [TreeNode makeNode:projectName exported:projectExported];
+        BOOL    projectExported    = [projectInstance exported];
+        NSDate *projectFirstExport = [projectInstance firstExportDate];
+        NSDate *projectLastExport  = [projectInstance lastExportDate];
+        projectNode = [TreeNode makeNode:projectName exported:projectExported firstExport:projectFirstExport lastExport:projectLastExport];
         [[monthNode mutableChildNodes] addObject:projectNode];
       }
       [[yearNode mutableChildNodes] addObject:monthNode];

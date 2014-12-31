@@ -11,7 +11,7 @@
 
 
 @implementation TreeNode
-@synthesize entityName,exported;
+@synthesize entityName,exported,firstExport,lastExport;
 + (NSTreeNode *) makeNode:(NSString *)nodeName {
   TreeNode *treeNode = [[TreeNode alloc]init];
   treeNode.entityName = nodeName;

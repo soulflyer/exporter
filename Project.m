@@ -58,7 +58,10 @@
 - (NSDate *)firstExportDate{
   if ([self exported]) {
     // return the file creation date of notes.txt
-    return [NSDate date];
+    NSLog(@"Find creation date of %@",[self fullPath]);
+    NSDate *creationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fullPath] stringByStandardizingPath] error:nil] fileCreationDate];
+    NSLog(@"Creation date is: %@",creationDate);
+    return creationDate;
   }
   return [NSDate date];
 }
@@ -66,7 +69,10 @@
 - (NSDate *)lastExportDate{
   if ([self exported]) {
     // return modification date of notes.txt
-    return [NSDate date];
+    NSLog(@"Find modification date of %@",[self path]);
+    NSDate *modificationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fullPath] stringByStandardizingPath] error:nil] fileModificationDate];
+    NSLog(@"Modification date is: %@",modificationDate);
+    return modificationDate;
   }
   return [NSDate date];
 }

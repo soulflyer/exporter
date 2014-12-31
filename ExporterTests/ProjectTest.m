@@ -47,6 +47,20 @@
   
 }
 
+-(void)testFirstExportDate {
+  Project *project = [Project projectWithName:@"15-House" month:@"October" year:@"2014"];
+  NSDate *firstExportDate = [project firstExportDate];
+  NSDate *testDate = [NSDate dateWithString:@"2014-11-29 11:22:55 +0000"];
+  NSLog(@"firstExport: %@ %@",firstExportDate,testDate );
+  XCTAssertEqual(firstExportDate, testDate);
+}
 
+-(void)testLastExportDate {
+  Project *project = [Project projectWithName:@"15-House" month:@"October" year:@"2014"];
+  NSDate *lastExportDate = [project lastExportDate];
+  NSDate *testDate = [NSDate dateWithString:@"2014-11-29 11:23:33 +0000"];
+  NSLog(@"Last export: %@ %@",lastExportDate,testDate );
+  XCTAssertEqual(lastExportDate, testDate);
+}
 
 @end

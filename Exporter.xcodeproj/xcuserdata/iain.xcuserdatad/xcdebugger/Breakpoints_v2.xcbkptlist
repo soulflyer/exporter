@@ -115,28 +115,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Project.m"
-            timestampString = "441645242.549854"
+            timestampString = "448805774.046859"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
             landmarkName = "-monthNumber"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Exporter/AppDelegate.m"
-            timestampString = "441693251.003254"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "-generateApertureTree:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

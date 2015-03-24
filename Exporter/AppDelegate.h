@@ -11,10 +11,12 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>{
   Aperture *aperture;
+  NSArray *apertureTree;
   IBOutlet NSOutlineView *outlineView;
   IBOutlet NSTreeController *treeController;
   IBOutlet PreferencesWindowController *preferencesWindowController;
 }
+- (IBAction)export:(id)sender;
 
 
 @end

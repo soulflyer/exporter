@@ -7,6 +7,7 @@
 //
 
 #import "Project.h"
+@class Aperture;
 
 @implementation Project
 + (Project *)projectWithName:(NSString *)prName month:(NSString *)month year:(NSString *)year {

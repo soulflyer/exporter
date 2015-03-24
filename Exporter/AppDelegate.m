@@ -17,6 +17,9 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
+-(void) exportPics:(NSString *)blah toDirectory:(NSString *)unk;
+-(BOOL) setup;
+-(BOOL) teardown;
 @end
 
 @interface AppDelegate ()
@@ -28,7 +31,7 @@
 
 #define defaultPhotosPath @"~/Pictures"
 #define photosPathKey @"photosPath"
-#define defaultTopFolders @"2014,2013"
+#define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
@@ -40,6 +43,7 @@
   NSLog(@"Photos URL again : %@",photosURL);
   NSString *topFolders = [defaults objectForKey:topFoldersKey];
   NSLog(@"%@",topFolders);
+  
 }
 
 - (void)awakeFromNib{
@@ -61,9 +65,15 @@
   NSLog(@"Photos URL: %@",photosURL);
   
   aperture = [[NSClassFromString(@"Aperture") alloc] init];
+  [aperture setup];
+  apertureTree = [aperture getAllProjects];
   
-  [treeController setContent:[self generateApertureTree:[aperture getAllProjects]]];
+  [treeController setContent:[self generateApertureTree:apertureTree]];
   [outlineView reloadData];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
+  [aperture teardown];
 }
 
 -(NSArray *)generateApertureTree:(NSArray *)apertureData {
@@ -113,4 +123,30 @@
   [[preferencesWindowController window] makeKeyWindow];
 }
 
+- (IBAction)export:(id)sender {
+  NSLog(@"Export button pressed");
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  for (id thing in [treeController selectionIndexPaths]){
+    NSUInteger length= [thing length];
+    if (length < 3){
+      NSLog(@"thing: %@", thing);
+    } else {
+      NSUInteger indexes[3];
+      [thing getIndexes:indexes];
+      NSUInteger year    = indexes[0];
+      NSUInteger month   = indexes[1];
+      NSUInteger project = indexes[2];
+      NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
+      NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
+      NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
+      NSString *projectPath = [NSString stringWithFormat:@"%@/%@/%@",yearName,monthName,projectName];
+      
+      
+      NSLog(@"%@",projectPath);
+      Project *projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
+      
+      [aperture exportPics:[projectToExport path] toDirectory:[defaults stringForKey:photosPathKey]];
+    }
+  }
+}
 @end

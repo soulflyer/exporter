@@ -100,6 +100,7 @@
 				AE5961451A496A9900CB9DD2 /* Project.m */,
 				AED964571A3AA4F000E72772 /* AppDelegate.h */,
 				AED964581A3AA4F000E72772 /* AppDelegate.m */,
+				AED964771A3AB52100E72772 /* Aperture.applescript */,
 				AED9645C1A3AA4F000E72772 /* Images.xcassets */,
 				AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */,
 				AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */,
@@ -117,7 +118,6 @@
 			children = (
 				AED964561A3AA4F000E72772 /* Info.plist */,
 				AED9645A1A3AA4F000E72772 /* main.m */,
-				AED964771A3AB52100E72772 /* Aperture.applescript */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

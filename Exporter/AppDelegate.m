@@ -17,9 +17,12 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
--(void) exportPics:(NSString *)blah toDirectory:(NSString *)unk;
+-(void) exportPictures:(NSString *)blah toDirectory:(NSString *)unk;
+-(BOOL)exportPics:(NSString *)selection toDirectory:(NSString *)thePath atSize:(NSString *)theExportSetting withWatermark:(BOOL)watermark;
+-(BOOL)exportProject:(NSString *)theProjectPath toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
 -(BOOL) setup;
 -(BOOL) teardown;
+-(BOOL) setExportDate:(NSString *)theProjectPath;
 @end
 
 @interface AppDelegate ()
@@ -35,18 +38,20 @@
 #define topFoldersKey @"topFolders"
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+  NSLog(@"applicationDidFinishLaunching");
   // Insert code here to initialize your application
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  NSString *photosPath = [defaults stringForKey:photosPathKey];
-  NSLog(@"photosPath: %@",photosPath);
-  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
-  NSLog(@"Photos URL again : %@",photosURL);
-  NSString *topFolders = [defaults objectForKey:topFoldersKey];
-  NSLog(@"%@",topFolders);
+//  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//  NSString *photosPath = [defaults stringForKey:photosPathKey];
+//  NSLog(@"photosPath: %@",photosPath);
+//  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
+//  NSLog(@"Photos URL again : %@",photosURL);
+//  NSString *topFolders = [defaults objectForKey:topFoldersKey];
+//  NSLog(@"%@",topFolders);
   
 }
 
 - (void)awakeFromNib{
+  NSLog(@"awakeFromNib");
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *photosPath = [defaults stringForKey:photosPathKey];
   if (photosPath == nil) {
@@ -61,8 +66,8 @@
     [defaults setObject:topFolders forKey:topFoldersKey];
   }
   [defaults synchronize];
-  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
-  NSLog(@"Photos URL: %@",photosURL);
+  //NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
+  //NSLog(@"Photos URL: %@",photosURL);
   
   aperture = [[NSClassFromString(@"Aperture") alloc] init];
   [aperture setup];
@@ -124,12 +129,11 @@
 }
 
 - (IBAction)export:(id)sender {
-  NSLog(@"Export button pressed");
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length= [thing length];
     if (length < 3){
-      NSLog(@"thing: %@", thing);
+      NSLog(@"Can't yet export folders of projects");
     } else {
       NSUInteger indexes[3];
       [thing getIndexes:indexes];
@@ -139,13 +143,22 @@
       NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
       NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
       NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
-      NSString *projectPath = [NSString stringWithFormat:@"%@/%@/%@",yearName,monthName,projectName];
-      
-      
-      NSLog(@"%@",projectPath);
+
       Project *projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
+      NSLog(@"%@ ",[projectToExport path]);
+
+      NSLog(@"Thumb Path:    %@",[projectToExport thumbPath]);
+      NSLog(@"Medium Path:   %@",[projectToExport mediumPath]);
+      NSLog(@"Large Path:    %@",[projectToExport largePath]);
+      NSLog(@"Fullsize Path: %@",[projectToExport fullsizePath]);
+      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
       
-      [aperture exportPics:[projectToExport path] toDirectory:[defaults stringForKey:photosPathKey]];
+      [aperture setExportDate:[projectToExport path]];
+      
+      //[aperture exportPictures:[projectToExport path] toDirectory:[defaults stringForKey:photosPathKey]];
     }
   }
 }

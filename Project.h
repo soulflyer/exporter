@@ -22,4 +22,8 @@
 - (NSString *)path;
 - (NSString *)fullPath;
 - (NSString *)monthNumber;
+- (NSString *)thumbPath;
+- (NSString *)mediumPath;
+- (NSString *)largePath;
+- (NSString *)fullsizePath;
 @end

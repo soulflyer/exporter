@@ -59,9 +59,9 @@
 - (NSDate *)firstExportDate{
   if ([self exported]) {
     // return the file creation date of notes.txt
-    NSLog(@"Find creation date of %@",[self fullPath]);
+    //NSLog(@"Find creation date of %@",[self fullPath]);
     NSDate *creationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fullPath] stringByStandardizingPath] error:nil] fileCreationDate];
-    NSLog(@"Creation date is: %@",creationDate);
+    //NSLog(@"Creation date is: %@",creationDate);
     return creationDate;
   }
   return [NSDate date];
@@ -70,9 +70,9 @@
 - (NSDate *)lastExportDate{
   if ([self exported]) {
     // return modification date of notes.txt
-    NSLog(@"Find modification date of %@",[self path]);
+    //NSLog(@"Find modification date of %@",[self path]);
     NSDate *modificationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[[self fullPath] stringByStandardizingPath] error:nil] fileModificationDate];
-    NSLog(@"Modification date is: %@",modificationDate);
+    //NSLog(@"Modification date is: %@",modificationDate);
     return modificationDate;
   }
   return [NSDate date];
@@ -84,9 +84,27 @@
 
 - (NSString *)fullPath{
   NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
-  NSLog(@"%@",[NSString stringWithFormat:@"default path %@",[def stringForKey:@"photosPath"]]);
-  return [NSString stringWithFormat:@"%@%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"photosPath"],[self path]];
+  //NSLog(@"%@",[NSString stringWithFormat:@"default path %@",[def stringForKey:@"photosPath"]]);
+  return [NSString stringWithFormat:@"%@%@",[def stringForKey:@"photosPath"],[self path]];
 }
 
+- (NSString *)thumbPath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@/thumbs%@",[def stringForKey:@"photosPath"],[self path]];
+}
 
+- (NSString *)mediumPath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@/medium%@",[def stringForKey:@"photosPath"],[self path]];
+}
+
+- (NSString *)largePath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@/large%@",[def stringForKey:@"photosPath"],[self path]];
+}
+
+- (NSString *)fullsizePath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@/fullsize%@",[def stringForKey:@"photosPath"],[self path]];
+}
 @end

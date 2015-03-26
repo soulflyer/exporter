@@ -8,13 +8,11 @@ script Aperture
 --------------------------------------------------------------------------------------------------------------------
   on setup()
     set g_libPath to my libraryPath()
-    log g_libPath
     set libPOSIX to POSIX path of g_libPath
     set libDBPOSIX to quoted form of (libPOSIX & "/Database/Library.apdb") as string
     set thescript to "cp " & libDBPOSIX & " /tmp"
     log thescript
     do shell script thescript
-    log "copied database"
     return true
   end setup
   
@@ -27,41 +25,6 @@ script Aperture
     return true
   end teardown
 
---------------------------------------------------------------------------------------------------------------------
-  on libraryPath()
-    tell application "System Events" to set p_libPath to value of property list item "LibraryPath" of property list file ((path to preferences as Unicode text) & "com.apple.Aperture.plist")
-    if ((offset of "~" in p_libPath) is not 0) then
-      set p_script to "/bin/echo $HOME"
-      set p_homePath to (do shell script p_script)
-      set p_offset to offset of "~" in p_libPath
-      set p_path to text (p_offset + 1) thru -1 of p_libPath
-      return p_homePath & p_path
-      else
-      return p_libPath
-    end if
-  end libraryPath
-
---------------------------------------------------------------------------------------------------------------------
-   --	on topLevelFolders()
-  --		set returnValue to {}
-  --		tell application "Aperture"
-  --			--tell library "Aperture Library"
-  --			--log "hello"
-  --			set sels to every folder whose parent's name is "Aperture Library"
-  --      set sels to {"2013" , "2014"}
-  --			repeat with sel in sels
-  --        tell current application
-  --				log "sel: " & sel
-  --        end tell
-  --        set sel to (folder sel)
-  --				set selItem to {apertureID:(id of sel), apertureName:(name of sel), leaf:"false"}
-  --				set end of returnValue to selItem
-  --			end repeat
-  --			--end tell
-  --		end tell
-  --		return returnValue
-  --	end topLevelFolders
-  --
 --------------------------------------------------------------------------------------------------------------------
   on getAllProjects()
     set allYearRecords to {}
@@ -96,51 +59,6 @@ script Aperture
     return allYearRecords
   end getAllProjects
   
-  to splitString(aString, delimiter)
-		set retVal to {}
-    set prevDelimiter to AppleScript's text item delimiters
-    set AppleScript's text item delimiters to {delimiter}
-    set retVal to every text item of aString
-    set AppleScript's text item delimiters to prevDelimiter
-    return retVal
-  end splitString
-
---------------------------------------------------------------------------------------------------------------------
-on setExportedDate(selectedPics)
-		-- Make sure the modified time comes before the exported date
-    set edate to (current date) + 1 * minutes
-    set curyear to year of edate as string
-    set curmonth to month of edate as string
-    my logg:curmonth
-    set curmonth to my monthToIntegerString:curmonth
-    set curday to day of edate as string
-    if length of curday is 1 then
-      set curday to "0" & curday
-    end if
-    set curhour to hours of edate as string
-    if length of curhour is 1 then
-      set curhour to "0" & curhour
-    end if
-    set curmins to minutes of edate as string
-    if length of curmins is 1 then
-      set curmins to "0" & curmins
-    end if
-    set cursecs to seconds of edate as string
-    if length of cursecs is 1 then
-      set cursecs to "0" & cursecs
-    end if
-    set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
-    log "Export date: " & exportedDate
-    tell application "Aperture"
-      repeat with pic in selectedPics
-        tell pic
-          (my logg:("setting export date of " & name))
-          make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
-        end tell
-      end repeat
-    end tell
-end setExportedDate
-
 --------------------------------------------------------------------------------------------------------------------
 on setUrgency(pr)
 		tell application "Aperture"
@@ -166,80 +84,191 @@ on setUrgency(pr)
 end setUrgency
 
 --------------------------------------------------------------------------------------------------------------------
-on exportPics:theProjectPath toDirectory:theRootDirectory
-  log "starting export: " & theProjectPath & " to " & theRootDirectory
+on exportPictures:theProjectPath toDirectory:theRootDirectory
+  
+  log "exportPictures starting export: " & theProjectPath & " to " & theRootDirectory
   set theRootDirectory to theRootDirectory as string
   set fullsizePath to theRootDirectory & "/fullsize/" & theProjectPath
   set largePath to theRootDirectory & "/large/" & theProjectPath
-  set mastersPath to theRootDirectory & "/masters/" & theProjectPath
   set thumbsPath to theRootDirectory & "/thumbs/" & theProjectPath
   set mediumPath to theRootDirectory & "/medium/" & theProjectPath
   set rootPath to theRootDirectory & "/" & theProjectPath
+  
+  my exportProject:theProjectPath toDirectory:thumbsPath atSize:"JPEG - Thumbnail" withWatermark:false
+  my exportProject:theProjectPath toDirectory:mediumPath atSize:"JPEG - Fit within 1024 x 1024" withWatermark:true
+  my exportProject:theProjectPath toDirectory:largePath atSize:"JPEG - Fit within 2048 x 2048" withWatermark:true
+  my exportProject:theProjectPath toDirectory:fullsizePath atSize:"JPEG - Original Size" withWatermark:false
+  
+  set notes to my getNotes:theProjectPath
+  set thescript to "echo \"" & notes & "\"> " & rootPath & "/notes.txt"
+  log thescript
+  do shell script thescript
+  set thescript to "/Users/iain/bin/build-shoot-page " & rootPath
+  log thescript
+  do shell script thescript
+  my setExportDate:theProjectPath
+end exportPictures:
+
+--------------------------------------------------------------------------------------------------------------------
+on exportProject:theProjectPath toDirectory:thePath atSize:theSize withWatermark:watermark
+  log "exportProject starting export to " & thePath
+  set thePath to thePath as string
+  my removeAndReplaceDir(thePath)
   set components to (current application's NSString's stringWithString:theProjectPath)
-  log "components " & components
   set componentsArray to (current application's NSMutableArray)
   set componentsArray to (components's componentsSeparatedByString:"/")
-  repeat with comp in componentsArray
-    log "## " & comp
-  end repeat
-  log count of componentsArray
-  log "********"
   if componentsArray's |count|() is 4 then
-    log "!!!!!!!!!!!!!!!"
     set asComponents to componentsArray as list
     set theYear to item 2 of asComponents
-    log "the year " & theYear
     set theMonth to item 3 of asComponents
-    log "the month " & theMonth
     set theMonth to my integerToMonthString:theMonth
-    log "the month " & theMonth
     set theProject to item 4 of asComponents
-    log "the project " & theProject
-    log "%%%%%%%%"
+    --log "theProject " & theProject
+    tell application "Aperture"
+      tell folder theYear
+        tell folder theMonth
+          tell project theProject
+            set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
+          end tell
+        end tell
+      end tell
+    end tell
+    my exportPics:curSel toDirectory:thePath atSize:theSize withWatermark:watermark
+  end if
+end exportProject
+
+--------------------------------------------------------------------------------------------------------------------
+on setExportDate:theProjectPath
+  log "setting export date for " & theProjectPath
+  -- Make sure the modified time comes before the exported date
+  set edate to (current date) + 2 * minutes
+  set curyear to year of edate as string
+  set curmonth to month of edate as string
+  my logg:curmonth
+  set curmonth to my monthToIntegerString:curmonth
+  set curday to day of edate as string
+  if length of curday is 1 then
+    set curday to "0" & curday
+  end if
+  set curhour to hours of edate as string
+  if length of curhour is 1 then
+    set curhour to "0" & curhour
+  end if
+  set curmins to minutes of edate as string
+  if length of curmins is 1 then
+    set curmins to "0" & curmins
+  end if
+  set cursecs to seconds of edate as string
+  if length of cursecs is 1 then
+    set cursecs to "0" & cursecs
+  end if
+  set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
+  log "Export date: " & exportedDate
+  set components to (current application's NSString's stringWithString:theProjectPath)
+  set componentsArray to (current application's NSMutableArray)
+  set componentsArray to (components's componentsSeparatedByString:"/")
+  if componentsArray's |count|() is 4 then
+    set asComponents to componentsArray as list
+    set theYear to item 2 of asComponents
+    set theMonth to item 3 of asComponents
+    set theMonth to my integerToMonthString:theMonth
+    set theProject to item 4 of asComponents
+    tell application "Aperture"
+      tell folder theYear
+        tell folder theMonth
+          tell project theProject
+            set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
+          end tell
+        end tell
+      end tell
+      repeat with pic in cursel
+        tell pic
+          (my logg:("setting export date of " & name))
+          make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
+        end tell
+      end repeat
+    end tell
+  end if
+  return true
+end setExportProjectDate
+
+--------------------------------------------------------------------------------------------------------------------
+on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermark:watermark
+  set theExportSetting to theExportSetting as string
+  set watermark to watermark as string
+  set tempPath to my getTempDir()
+  tell application "Aperture"
+    export selection naming files with file naming policy "Version Name" using export setting theExportSetting to tempPath
+  end tell
+  if watermark equals "true" then
+    set thescript to "/Users/iain/bin/add-watermark " & tempPath & "/*.jpg "
+    log thescript
+    do shell script thescript
+    else
+    log "No watermark on " & thePath
+  end if
+  set thescript to "mv " & tempPath & "/* " & thePath & "/ ; rm -r " & tempPath
+  log thescript
+  do shell script thescript
+  return true
+end export
+
+--------------------------------------------------------------------------------------------------------------------
+--on doExport(theSel, theThumbsPath, theMediumPath, theLargePath, theFullsizePath)
+--  my exportPics:theSel toDirectory:theThumbsPath atSize:"JPEG - Thumbnail" withWatermark:false
+--  my exportPics:theSel toDirectory:theMediumPath atSize:"JPEG - Fit within 1024 x 1024" withWatermark:true
+--  my exportPics:theSel toDirectory:theLargePath atSize:"JPEG - Fit within 2048 x 2048" withWatermark:true
+--  my exportPics:theSel toDirectory:theFullsizePath atSize:"JPEG - Original Size" withWatermark:false
+--  my setExportedDate(theSel)
+--end doExport
+
+--------------------------------------------------------------------------------------------------------------------
+on getNotes:theProjectPath
+  set components to (current application's NSString's stringWithString:theProjectPath)
+  set componentsArray to (current application's NSMutableArray)
+  set componentsArray to (components's componentsSeparatedByString:"/")
+  if componentsArray's |count|() is 4 then
+    set asComponents to componentsArray as list
+    set theYear to item 2 of asComponents
+    set theMonth to item 3 of asComponents
+    set theMonth to my integerToMonthString:theMonth
+    set theProject to item 4 of asComponents
     
-    my removeAndReplaceDir(thumbsPath)
-    my removeAndReplaceDir(mediumPath)
-    my removeAndReplaceDir(largePath)
-    my removeAndReplaceDir(rootPath)
-    my removeAndReplaceDir(fullsizePath)
-    my removeAndReplaceDir(mastersPath)
-    log "##########"
     tell application "Aperture"
       tell folder theYear
         tell folder theMonth
           tell project theProject
             set thescript to p_sql & " " & tempDatabase & " \"select note from RKNOTE where ATTACHEDTOUUID='" & id & "'\""
             tell current application
-            log thescript
-            
-            set notes to do shell script thescript
-            log "notes " & notes
+              set notes to do shell script thescript
             end tell
-            set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
-            my setUrgency(theProject)
           end tell
         end tell
       end tell
     end tell
-    log "@@@@@@@@@@@@@@@@@@"
-    my doExport(cursel, thumbsPath, mediumPath, largePath, fullsizePath)
-    log "^^^^^^^^^^^^"
-    --my addLinks(cursel, mastersPath)
-    set thescript to "echo \"" & notes & "\"> " & rootPath & "/notes.txt"
-    log thescript
-    do shell script thescript
-    set thescript to "/Users/iain/bin/build-shoot-page " & rootPath
-    log thescript
-    do shell script thescript
-  else
+    return notes
+    else
     (alert("Problem with path to project. Is it in yyyy/mm/dd-projname form?"))
   end if
-  log "&&&&&&&&&&&&"
-end exportPics:
+end getNotes
+
+--------------------------------------------------------------------------------------------------------------------
+on libraryPath()
+  tell application "System Events" to set p_libPath to value of property list item "LibraryPath" of property list file ((path to preferences as Unicode text) & "com.apple.Aperture.plist")
+  if ((offset of "~" in p_libPath) is not 0) then
+    set p_script to "/bin/echo $HOME"
+    set p_homePath to (do shell script p_script)
+    set p_offset to offset of "~" in p_libPath
+    set p_path to text (p_offset + 1) thru -1 of p_libPath
+    return p_homePath & p_path
+    else
+    return p_libPath
+  end if
+end libraryPath
 
 --------------------------------------------------------------------------------------------------------------------
 on removeAndReplaceDir(dirName)
-		--my logg:("Removing previous versions in " & dirName)
+		my logg:("Removing previous versions in " & dirName)
     if my fileExists(POSIX path of dirName) then
       set thescript to "rm -r " & dirName
       do shell script thescript
@@ -247,18 +276,6 @@ on removeAndReplaceDir(dirName)
     set thescript to "mkdir -p " & dirName
     do shell script thescript
 end removeAndReplaceDir
-
---------------------------------------------------------------------------------------------------------------------
-on exportP:selection toDirectory:thePath atSize:theExportSetting
-  set tempPath to my getTempDir()
-  tell application "Aperture"
-    export selection naming files with file naming policy "Version Name" using export setting theExportSetting to tempPath
-  end tell
-  set thescript to "mv " & tempPath & "/* " & thePath & "/"
-  log thescript
-  do shell script thescript
-  return true
-end export
 
 --------------------------------------------------------------------------------------------------------------------
 on getTempDir()
@@ -269,46 +286,9 @@ on getTempDir()
   set curtime to time of (current date) as string
   set tempPath to "/tmp/" & curyear & curmonth & curday & curtime
   set thescript to "mkdir " & tempPath
-  log thescript
   do shell script thescript
   return tempPath as string
 end getTempDir
-
---------------------------------------------------------------------------------------------------------------------
-on doExport(theSel, theThumbsPath, theMediumPath, theLargePath, theFullsizePath)
-
-  set tempPath to my getTempDir()
-  log "tempPath " & tempPath
-
-  tell application "Aperture"
-      export theSel naming files with file naming policy "Version Name" using export setting "JPEG - Thumbnail" to tempPath
-      set thescript to "mv " & tempPath & "/* " & theThumbsPath & "/"
-      do shell script thescript
-      my logg:"Finished exporting thumbnails"
-      export theSel naming files with file naming policy "Version Name" using export setting "JPEG - Fit within 1024 x 1024" to tempPath
-      set thescript to "/Users/iain/bin/add-watermark " & tempPath & "/*.jpg "
-      do shell script thescript
-      set thescript to "mv " & tempPath & "/* " & theMediumPath
-      do shell script thescript
-      my logg:"Finished exporting mediums"
-      export theSel naming files with file naming policy "Version Name" using export setting "JPEG - Fit within 2048 x 2048" to tempPath
-      set thescript to "/Users/iain/bin/add-watermark " & tempPath & "/*.jpg "
-      do shell script thescript
-      set thescript to "mv " & tempPath & "/* " & theLargePath
-      do shell script thescript
-      my logg:"Finished exporting larges"
-      export theSel naming files with file naming policy "Version Name" using export setting "JPEG - Original Size" to tempPath
-      set thescript to "mv " & tempPath & "/* " & theFullsizePath
-      do shell script thescript
-      my logg:"Finished exporting fullsize"
-    end tell
-    
-    my setExportedDate(theSel)
-    
-    set thescript to "rm -r " & tempPath
-    log thescript
-    do shell script thescript
-end doExport
 
 --------------------------------------------------------------------------------------------------------------------
 on integerToMonthString:mN
@@ -355,6 +335,16 @@ on fileExists(posixPath)
     echo 0;
     fi") as integer) as boolean
 end fileExists
+
+--------------------------------------------------------------------------------------------------------------------
+on splitString(aString, delimiter)
+		set retVal to {}
+    set prevDelimiter to AppleScript's text item delimiters
+    set AppleScript's text item delimiters to {delimiter}
+    set retVal to every text item of aString
+    set AppleScript's text item delimiters to prevDelimiter
+    return retVal
+end splitString
 
 --------------------------------------------------------------------------------------------------------------------
 on logg:message

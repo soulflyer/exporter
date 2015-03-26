@@ -17,17 +17,17 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
--(void) exportPictures:(NSString *)blah toDirectory:(NSString *)unk;
--(BOOL)exportPics:(NSString *)selection toDirectory:(NSString *)thePath atSize:(NSString *)theExportSetting withWatermark:(BOOL)watermark;
 -(BOOL)exportProject:(NSString *)theProjectPath toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
--(BOOL) setup;
--(BOOL) teardown;
--(BOOL) setExportDate:(NSString *)theProjectPath;
+-(BOOL)setup;
+-(BOOL)teardown;
+-(BOOL)setExportDate:(NSString *)theProjectPath;
+-(NSString *)getNotes:(NSString *)path;
 @end
 
 @interface AppDelegate ()
 
 @property (weak) IBOutlet NSWindow *window;
+
 @end
 
 @implementation AppDelegate
@@ -128,6 +128,34 @@
   [[preferencesWindowController window] makeKeyWindow];
 }
 
+
+NSString* runCommand(NSString *commandToRun) {
+  NSTask *task;
+  task = [[NSTask alloc] init];
+  [task setLaunchPath: @"/bin/sh"];
+  
+  NSArray *arguments = [NSArray arrayWithObjects:
+                        @"-c" ,
+                        [NSString stringWithFormat:@"%@", commandToRun],
+                        nil];
+  NSLog(@"run command: %@",commandToRun);
+  [task setArguments: arguments];
+  
+  NSPipe *pipe;
+  pipe = [NSPipe pipe];
+  [task setStandardOutput: pipe];
+  
+  NSFileHandle *file;
+  file = [pipe fileHandleForReading];
+  
+  [task launch];
+  
+  NSData *data;
+  data = [file readDataToEndOfFile];
+  
+  return [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
+}
+
 - (IBAction)export:(id)sender {
   //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   for (id thing in [treeController selectionIndexPaths]){
@@ -145,12 +173,7 @@
       NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
 
       Project *projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
-      NSLog(@"%@ ",[projectToExport path]);
 
-      NSLog(@"Thumb Path:    %@",[projectToExport thumbPath]);
-      NSLog(@"Medium Path:   %@",[projectToExport mediumPath]);
-      NSLog(@"Large Path:    %@",[projectToExport largePath]);
-      NSLog(@"Fullsize Path: %@",[projectToExport fullsizePath]);
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
@@ -158,8 +181,16 @@
       
       [aperture setExportDate:[projectToExport path]];
       
-      //[aperture exportPictures:[projectToExport path] toDirectory:[defaults stringForKey:photosPathKey]];
+      NSString *notes=[aperture getNotes:[projectToExport path]];
+      NSString *cmd = [NSString stringWithFormat:@"echo \"%@\" > %@/notes.txt", notes, [projectToExport rootPath]];
+      NSLog(@"%@",cmd);
+      runCommand(cmd);
+      
+      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[projectToExport rootPath]];
+      runCommand(cmd);
     }
   }
 }
+
+
 @end

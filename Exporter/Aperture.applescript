@@ -60,54 +60,28 @@ script Aperture
   end getAllProjects
   
 --------------------------------------------------------------------------------------------------------------------
-on setUrgency(pr)
-		tell application "Aperture"
-      tell project pr
-        -- Digikam uses Urgency to store the ratings, so convert Aperture rating to urgency
-        tell (every image version where main rating is 5)
-          make new IPTC tag with properties {name:"Urgency", value:"1"}
-        end tell
-        tell (every image version where main rating is 4)
-          make new IPTC tag with properties {name:"Urgency", value:"2"}
-        end tell
-        tell (every image version where main rating is 3)
-          make new IPTC tag with properties {name:"Urgency", value:"4"}
-        end tell
-        tell (every image version where main rating is 2)
-          make new IPTC tag with properties {name:"Urgency", value:"5"}
-        end tell
-        tell (every image version where main rating is 1)
-          make new IPTC tag with properties {name:"Urgency", value:"6"}
-        end tell
-      end tell
-    end tell
-end setUrgency
-
---------------------------------------------------------------------------------------------------------------------
-on exportPictures:theProjectPath toDirectory:theRootDirectory
-  
-  log "exportPictures starting export: " & theProjectPath & " to " & theRootDirectory
-  set theRootDirectory to theRootDirectory as string
-  set fullsizePath to theRootDirectory & "/fullsize/" & theProjectPath
-  set largePath to theRootDirectory & "/large/" & theProjectPath
-  set thumbsPath to theRootDirectory & "/thumbs/" & theProjectPath
-  set mediumPath to theRootDirectory & "/medium/" & theProjectPath
-  set rootPath to theRootDirectory & "/" & theProjectPath
-  
-  my exportProject:theProjectPath toDirectory:thumbsPath atSize:"JPEG - Thumbnail" withWatermark:false
-  my exportProject:theProjectPath toDirectory:mediumPath atSize:"JPEG - Fit within 1024 x 1024" withWatermark:true
-  my exportProject:theProjectPath toDirectory:largePath atSize:"JPEG - Fit within 2048 x 2048" withWatermark:true
-  my exportProject:theProjectPath toDirectory:fullsizePath atSize:"JPEG - Original Size" withWatermark:false
-  
-  set notes to my getNotes:theProjectPath
-  set thescript to "echo \"" & notes & "\"> " & rootPath & "/notes.txt"
-  log thescript
-  do shell script thescript
-  set thescript to "/Users/iain/bin/build-shoot-page " & rootPath
-  log thescript
-  do shell script thescript
-  my setExportDate:theProjectPath
-end exportPictures:
+--on setUrgency(pr)
+--		tell application "Aperture"
+--      tell project pr
+--        -- Digikam uses Urgency to store the ratings, so convert Aperture rating to urgency
+--        tell (every image version where main rating is 5)
+--          make new IPTC tag with properties {name:"Urgency", value:"1"}
+--        end tell
+--        tell (every image version where main rating is 4)
+--          make new IPTC tag with properties {name:"Urgency", value:"2"}
+--        end tell
+--        tell (every image version where main rating is 3)
+--          make new IPTC tag with properties {name:"Urgency", value:"4"}
+--        end tell
+--        tell (every image version where main rating is 2)
+--          make new IPTC tag with properties {name:"Urgency", value:"5"}
+--        end tell
+--        tell (every image version where main rating is 1)
+--          make new IPTC tag with properties {name:"Urgency", value:"6"}
+--        end tell
+--      end tell
+--    end tell
+--end setUrgency
 
 --------------------------------------------------------------------------------------------------------------------
 on exportProject:theProjectPath toDirectory:thePath atSize:theSize withWatermark:watermark
@@ -139,12 +113,10 @@ end exportProject
 
 --------------------------------------------------------------------------------------------------------------------
 on setExportDate:theProjectPath
-  log "setting export date for " & theProjectPath
   -- Make sure the modified time comes before the exported date
   set edate to (current date) + 2 * minutes
   set curyear to year of edate as string
   set curmonth to month of edate as string
-  my logg:curmonth
   set curmonth to my monthToIntegerString:curmonth
   set curday to day of edate as string
   if length of curday is 1 then
@@ -163,7 +135,7 @@ on setExportDate:theProjectPath
     set cursecs to "0" & cursecs
   end if
   set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
-  log "Export date: " & exportedDate
+  --log "Export date: " & exportedDate
   set components to (current application's NSString's stringWithString:theProjectPath)
   set componentsArray to (current application's NSMutableArray)
   set componentsArray to (components's componentsSeparatedByString:"/")
@@ -212,15 +184,6 @@ on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermar
   do shell script thescript
   return true
 end export
-
---------------------------------------------------------------------------------------------------------------------
---on doExport(theSel, theThumbsPath, theMediumPath, theLargePath, theFullsizePath)
---  my exportPics:theSel toDirectory:theThumbsPath atSize:"JPEG - Thumbnail" withWatermark:false
---  my exportPics:theSel toDirectory:theMediumPath atSize:"JPEG - Fit within 1024 x 1024" withWatermark:true
---  my exportPics:theSel toDirectory:theLargePath atSize:"JPEG - Fit within 2048 x 2048" withWatermark:true
---  my exportPics:theSel toDirectory:theFullsizePath atSize:"JPEG - Original Size" withWatermark:false
---  my setExportedDate(theSel)
---end doExport
 
 --------------------------------------------------------------------------------------------------------------------
 on getNotes:theProjectPath

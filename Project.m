@@ -107,4 +107,9 @@
   NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
   return [NSString stringWithFormat:@"%@/fullsize%@",[def stringForKey:@"photosPath"],[self path]];
 }
+
+- (NSString *)rootPath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@%@",[def stringForKey:@"photosPath"],[self path]];
+}
 @end

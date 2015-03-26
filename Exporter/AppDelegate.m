@@ -130,6 +130,7 @@
 
 
 NSString* runCommand(NSString *commandToRun) {
+  // Credit to Kenial http://stackoverflow.com/questions/412562/execute-a-terminal-command-from-a-cocoa-app/696942#696942
   NSTask *task;
   task = [[NSTask alloc] init];
   [task setLaunchPath: @"/bin/sh"];
@@ -174,20 +175,40 @@ NSString* runCommand(NSString *commandToRun) {
 
       Project *projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
 
+      [self setStatusMessage:@"Exporting thumbnails"];
+      [[self window] displayIfNeeded];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      
+      [self setStatusMessage:@"Exporting medium"];
+      [[self window] displayIfNeeded];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting large"];
+      [[self window] displayIfNeeded];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting fullsize"];
+      [[self window] displayIfNeeded];
       [aperture exportProject:[projectToExport path] toDirectory:[projectToExport fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
       
+      [self setStatusMessage:@"Setting exported date"];
+      [[self window] displayIfNeeded];
       [aperture setExportDate:[projectToExport path]];
       
+      [self setStatusMessage:@"Getting notes"];
+      [[self window] displayIfNeeded];
       NSString *notes=[aperture getNotes:[projectToExport path]];
       NSString *cmd = [NSString stringWithFormat:@"echo \"%@\" > %@/notes.txt", notes, [projectToExport rootPath]];
       NSLog(@"%@",cmd);
       runCommand(cmd);
       
+      [self setStatusMessage:@"Building web page"];
+      [[self window] displayIfNeeded];
       cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[projectToExport rootPath]];
       runCommand(cmd);
+      
+      [self setStatusMessage:@"Export complete"];
+      [[self window] displayIfNeeded];
     }
   }
 }

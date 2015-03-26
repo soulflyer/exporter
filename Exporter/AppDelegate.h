@@ -14,9 +14,11 @@
   NSArray *apertureTree;
   IBOutlet NSOutlineView *outlineView;
   IBOutlet NSTreeController *treeController;
+  //IBOutlet NSString *statusMessage;
   IBOutlet PreferencesWindowController *preferencesWindowController;
 }
 - (IBAction)export:(id)sender;
-
+@property (assign) NSInteger numberValue;
+@property (assign) NSString* statusMessage;
 @end
 

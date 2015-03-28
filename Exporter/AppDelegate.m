@@ -37,21 +37,7 @@
 #define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-  NSLog(@"applicationDidFinishLaunching");
-  // Insert code here to initialize your application
-//  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//  NSString *photosPath = [defaults stringForKey:photosPathKey];
-//  NSLog(@"photosPath: %@",photosPath);
-//  NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
-//  NSLog(@"Photos URL again : %@",photosURL);
-//  NSString *topFolders = [defaults objectForKey:topFoldersKey];
-//  NSLog(@"%@",topFolders);
-  
-}
-
 - (void)awakeFromNib{
-  NSLog(@"awakeFromNib");
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *photosPath = [defaults stringForKey:photosPathKey];
   if (photosPath == nil) {
@@ -75,6 +61,10 @@
   
   [treeController setContent:[self generateApertureTree:apertureTree]];
   [outlineView reloadData];
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+  [self setExportButtonState:true];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -111,7 +101,11 @@
         BOOL    projectExported    = [projectInstance exported];
         NSDate *projectFirstExport = [projectInstance firstExportDate];
         NSDate *projectLastExport  = [projectInstance lastExportDate];
-        projectNode = [TreeNode makeNode:projectName exported:projectExported firstExport:projectFirstExport lastExport:projectLastExport];
+        if (projectExported) {
+          projectNode = [TreeNode makeNode:projectName exported:projectExported firstExport:projectFirstExport lastExport:projectLastExport];}
+        else{
+          projectNode = [TreeNode makeNode:projectName];
+        }
         [[monthNode mutableChildNodes] addObject:projectNode];
       }
       [[yearNode mutableChildNodes] addObject:monthNode];
@@ -158,7 +152,7 @@ NSString* runCommand(NSString *commandToRun) {
 }
 
 - (IBAction)export:(id)sender {
-  //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  //[self setExportButtonState:false];
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length= [thing length];
     if (length < 3){
@@ -195,10 +189,12 @@ NSString* runCommand(NSString *commandToRun) {
       [[self window] displayIfNeeded];
       [aperture setExportDate:[projectToExport path]];
       
+      //Need to make the directory here if it doesn't already exist
+      
       [self setStatusMessage:@"Getting notes"];
       [[self window] displayIfNeeded];
       NSString *notes=[aperture getNotes:[projectToExport path]];
-      NSString *cmd = [NSString stringWithFormat:@"echo \"%@\" > %@/notes.txt", notes, [projectToExport rootPath]];
+      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [projectToExport rootPath], notes, [projectToExport rootPath]];
       NSLog(@"%@",cmd);
       runCommand(cmd);
       
@@ -207,8 +203,12 @@ NSString* runCommand(NSString *commandToRun) {
       cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[projectToExport rootPath]];
       runCommand(cmd);
       
+      [self setExportButtonState:true];
       [self setStatusMessage:@"Export complete"];
       [[self window] displayIfNeeded];
+      
+      [treeController setContent:[self generateApertureTree:apertureTree]];
+      [outlineView reloadData];
     }
   }
 }

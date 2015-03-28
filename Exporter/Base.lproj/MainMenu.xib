@@ -759,7 +759,7 @@
                             <rect key="frame" x="1" y="118.81927132606506" width="238" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="UH7-ht-Lnj">
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="UH7-ht-Lnj">
                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -780,6 +780,7 @@ DQ
                         </buttonCell>
                         <connections>
                             <action selector="export:" target="Voe-Tx-rLC" id="ImC-Ft-64U"/>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="exportButtonState" id="qfP-FQ-XDP"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zzn-3c-I46">

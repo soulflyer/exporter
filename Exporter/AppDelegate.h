@@ -20,5 +20,6 @@
 - (IBAction)export:(id)sender;
 @property (assign) NSInteger numberValue;
 @property (assign) NSString* statusMessage;
+@property (assign) BOOL exportButtonState;
 @end
 

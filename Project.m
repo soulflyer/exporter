@@ -60,10 +60,10 @@
   if ([self exported]) {
     // return the file creation date of notes.txt
     NSString *filePath = [NSString stringWithFormat:@"%@/%@",[self fullPath], @"notes.txt"];
-    NSLog(@"Find creation date of %@",filePath);
-    NSLog(@"%@",[filePath stringByStandardizingPath]);
+    //NSLog(@"Find creation date of %@",filePath);
+    //NSLog(@"%@",[filePath stringByStandardizingPath]);
     NSDate *creationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[filePath stringByStandardizingPath] error:nil] fileCreationDate];
-    NSLog(@"Creation date is: %@",creationDate);
+    //NSLog(@"Creation date is: %@",creationDate);
     return creationDate;
   }
   return [NSDate date];
@@ -73,9 +73,9 @@
   if ([self exported]) {
     // return modification date of notes.txt
     NSString *filePath = [[NSString stringWithFormat:@"%@/%@",[self fullPath], @"notes.txt"] stringByStandardizingPath];
-    NSLog(@"Find modification date of %@",filePath);
+    //NSLog(@"Find modification date of %@",filePath);
     NSDate *modificationDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:nil] fileModificationDate];
-    NSLog(@"Modification date is: %@",modificationDate);
+    //NSLog(@"Modification date is: %@",modificationDate);
     return modificationDate;
   }
   return [NSDate date];

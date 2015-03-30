@@ -17,11 +17,11 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
--(BOOL)exportProject:(NSString *)theProjectPath toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
+-(BOOL)exportProject:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
 -(BOOL)setup;
 -(BOOL)teardown;
--(BOOL)setExportDate:(NSString *)theProjectPath;
--(NSString *)getNotes:(NSString *)path;
+-(BOOL)setExportDateOf:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
+-(NSString *)getNotes:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 @end
 
 @interface AppDelegate ()
@@ -153,6 +153,10 @@ NSString* runCommand(NSString *commandToRun) {
 
 - (IBAction)export:(id)sender {
   //[self setExportButtonState:false];
+//  NSArray *selectedNodes = [treeController selectedNodes];
+//  for (NSTreeNode *node in selectedNodes){
+//    NSLog(@"node: %@",[node representedObject]);
+//  }
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length= [thing length];
     if (length < 3){
@@ -171,31 +175,34 @@ NSString* runCommand(NSString *commandToRun) {
 
       [self setStatusMessage:@"Exporting thumbnails"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
       
       [self setStatusMessage:@"Exporting medium"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
       
       [self setStatusMessage:@"Exporting large"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
       
       [self setStatusMessage:@"Exporting fullsize"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[projectToExport path] toDirectory:[projectToExport fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
+      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
       
       [self setStatusMessage:@"Setting exported date"];
       [[self window] displayIfNeeded];
-      [aperture setExportDate:[projectToExport path]];
-      
-      //Need to make the directory here if it doesn't already exist
+      [aperture setExportDateOf:projectName ofMonth:monthName ofYear:yearName];
       
       [self setStatusMessage:@"Getting notes"];
       [[self window] displayIfNeeded];
-      NSString *notes=[aperture getNotes:[projectToExport path]];
+      NSString *notes=[aperture getNotes:projectName ofMonth:monthName ofYear:yearName];
+      NSLog(@"Notes %@",notes);
+      if (!notes) {
+        notes=(@"");
+      }
+      NSLog(@"Notes %@",notes);
       NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [projectToExport rootPath], notes, [projectToExport rootPath]];
-      NSLog(@"%@",cmd);
+      //NSLog(@"%@",cmd);
       runCommand(cmd);
       
       [self setStatusMessage:@"Building web page"];
@@ -208,7 +215,12 @@ NSString* runCommand(NSString *commandToRun) {
       [[self window] displayIfNeeded];
       
       [treeController setContent:[self generateApertureTree:apertureTree]];
-      [outlineView reloadData];
+      //[outlineView reloadData];
+      
+//      for (NSTreeNode *node in selectedNodes){
+//        NSLog(@"node: %@",[node representedObject]);
+//        [outlineView expandItem:[node parentNode]];
+//      }
     }
   }
 }

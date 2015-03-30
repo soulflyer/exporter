@@ -716,14 +716,14 @@
                                                 <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.entityName" id="j80-L5-74w"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="jg5-gd-1ZV">
+                                        <tableColumn editable="NO" width="151.66015625" minWidth="10" maxWidth="3.4028234663852886e+38" id="jg5-gd-1ZV">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="First Exported">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
                                             <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="2oi-zu-3hC">
-                                                <dateFormatter key="formatter" dateStyle="medium" id="1kE-tX-alv"/>
+                                                <dateFormatter key="formatter" dateStyle="medium" timeStyle="short" id="1kE-tX-alv"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -733,14 +733,14 @@
                                                 <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.firstExport" id="dd0-mz-z0t"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn editable="NO" width="248" minWidth="10" maxWidth="3.4028234663852886e+38" id="NP2-XH-4XH">
+                                        <tableColumn editable="NO" width="196.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="NP2-XH-4XH">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Last Exported">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>
                                             <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="YJD-SP-LTi">
-                                                <dateFormatter key="formatter" dateStyle="medium" timeStyle="long" id="Vxh-hf-S3E"/>
+                                                <dateFormatter key="formatter" dateStyle="medium" timeStyle="short" id="Vxh-hf-S3E"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

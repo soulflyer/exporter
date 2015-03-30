@@ -83,36 +83,32 @@ script Aperture
 --    end tell
 --end setUrgency
 
+
 --------------------------------------------------------------------------------------------------------------------
-on exportProject:theProjectPath toDirectory:thePath atSize:theSize withWatermark:watermark
+on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark
   log "exportProject starting export to " & thePath
-  set thePath to thePath as string
+  set thePath    to thePath    as string
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
   my removeAndReplaceDir(thePath)
-  set components to (current application's NSString's stringWithString:theProjectPath)
-  set componentsArray to (current application's NSMutableArray)
-  set componentsArray to (components's componentsSeparatedByString:"/")
-  if componentsArray's |count|() is 4 then
-    set asComponents to componentsArray as list
-    set theYear to item 2 of asComponents
-    set theMonth to item 3 of asComponents
-    set theMonth to my integerToMonthString:theMonth
-    set theProject to item 4 of asComponents
-    --log "theProject " & theProject
-    tell application "Aperture"
-      tell folder theYear
-        tell folder theMonth
-          tell project theProject
-            set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
-          end tell
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
         end tell
       end tell
     end tell
-    my exportPics:curSel toDirectory:thePath atSize:theSize withWatermark:watermark
-  end if
+  end tell
+  my exportPics:curSel toDirectory:thePath atSize:theSize withWatermark:watermark  
 end exportProject
 
 --------------------------------------------------------------------------------------------------------------------
-on setExportDate:theProjectPath
+on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
   -- Make sure the modified time comes before the exported date
   set edate to (current date) + 2 * minutes
   set curyear to year of edate as string
@@ -135,32 +131,22 @@ on setExportDate:theProjectPath
     set cursecs to "0" & cursecs
   end if
   set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
-  --log "Export date: " & exportedDate
-  set components to (current application's NSString's stringWithString:theProjectPath)
-  set componentsArray to (current application's NSMutableArray)
-  set componentsArray to (components's componentsSeparatedByString:"/")
-  if componentsArray's |count|() is 4 then
-    set asComponents to componentsArray as list
-    set theYear to item 2 of asComponents
-    set theMonth to item 3 of asComponents
-    set theMonth to my integerToMonthString:theMonth
-    set theProject to item 4 of asComponents
-    tell application "Aperture"
-      tell folder theYear
-        tell folder theMonth
-          tell project theProject
-            set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
-          end tell
+  log "Export date: " & exportedDate
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
         end tell
       end tell
-      repeat with pic in cursel
-        tell pic
-          (my logg:("setting export date of " & name))
-          make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
-        end tell
-      end repeat
     end tell
-  end if
+    repeat with pic in cursel
+      tell pic
+        (my logg:("setting export date of " & name))
+        make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
+      end tell
+    end repeat
+  end tell
   return true
 end setExportProjectDate
 
@@ -183,36 +169,26 @@ on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermar
   log thescript
   do shell script thescript
   return true
-end export
+end exportPics
 
 --------------------------------------------------------------------------------------------------------------------
-on getNotes:theProjectPath
-  set components to (current application's NSString's stringWithString:theProjectPath)
-  set componentsArray to (current application's NSMutableArray)
-  set componentsArray to (components's componentsSeparatedByString:"/")
-  if componentsArray's |count|() is 4 then
-    set asComponents to componentsArray as list
-    set theYear to item 2 of asComponents
-    set theMonth to item 3 of asComponents
-    set theMonth to my integerToMonthString:theMonth
-    set theProject to item 4 of asComponents
-    
-    tell application "Aperture"
-      tell folder theYear
-        tell folder theMonth
-          tell project theProject
-            set thescript to p_sql & " " & tempDatabase & " \"select note from RKNOTE where ATTACHEDTOUUID='" & id & "'\""
-            tell current application
-              set notes to do shell script thescript
-            end tell
+on getNotes:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set thescript to p_sql & " " & tempDatabase & " \"select note from RKNOTE where ATTACHEDTOUUID='" & id & "'\""
+          tell current application
+            set notes to do shell script thescript
           end tell
         end tell
       end tell
     end tell
-    return notes
-    else
-    (alert("Problem with path to project. Is it in yyyy/mm/dd-projname form?"))
-  end if
+  end tell
+  return notes
 end getNotes
 
 --------------------------------------------------------------------------------------------------------------------

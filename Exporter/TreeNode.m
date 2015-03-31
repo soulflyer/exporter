@@ -12,7 +12,7 @@
 
 
 @implementation TreeNode
-@synthesize entityName,exported,firstExport,lastExport;
+@synthesize entityName,exported,modified,firstExport,lastExport;
 + (NSTreeNode *) makeNode:(NSString *)nodeName {
   TreeNode *treeNode  = [[TreeNode alloc]init];
   treeNode.entityName = nodeName;

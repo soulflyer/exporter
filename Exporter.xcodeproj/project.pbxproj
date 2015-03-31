@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AE5584A21ACA7E200007AE41 /* BooleanToColourTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5584A11ACA7E200007AE41 /* BooleanToColourTransformer.m */; };
 		AE5584A51ACA8E860007AE41 /* IntegerToColourTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5584A41ACA8E860007AE41 /* IntegerToColourTransformer.m */; };
 		AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AE59613F1A494D7500CB9DD2 /* TreeNode.m */; };
 		AE5961461A496A9900CB9DD2 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961451A496A9900CB9DD2 /* Project.m */; };
@@ -34,8 +33,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AE5584A01ACA7E200007AE41 /* BooleanToColourTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BooleanToColourTransformer.h; sourceTree = "<group>"; };
-		AE5584A11ACA7E200007AE41 /* BooleanToColourTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BooleanToColourTransformer.m; sourceTree = "<group>"; };
 		AE5584A31ACA8E860007AE41 /* IntegerToColourTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntegerToColourTransformer.h; sourceTree = "<group>"; };
 		AE5584A41ACA8E860007AE41 /* IntegerToColourTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegerToColourTransformer.m; sourceTree = "<group>"; };
 		AE59613E1A494D7500CB9DD2 /* TreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeNode.h; sourceTree = "<group>"; };
@@ -111,8 +108,6 @@
 				AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */,
 				AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */,
 				AED9645E1A3AA4F000E72772 /* MainMenu.xib */,
-				AE5584A01ACA7E200007AE41 /* BooleanToColourTransformer.h */,
-				AE5584A11ACA7E200007AE41 /* BooleanToColourTransformer.m */,
 				AE5584A31ACA8E860007AE41 /* IntegerToColourTransformer.h */,
 				AE5584A41ACA8E860007AE41 /* IntegerToColourTransformer.m */,
 				AE5961591A4DB10B00CB9DD2 /* Preferences.xib */,
@@ -255,7 +250,6 @@
 				AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */,
 				AED964781A3AB52100E72772 /* Aperture.applescript in Sources */,
 				AE5961461A496A9900CB9DD2 /* Project.m in Sources */,
-				AE5584A21ACA7E200007AE41 /* BooleanToColourTransformer.m in Sources */,
 				AE59615D1A4F135300CB9DD2 /* PreferencesWindowController.m in Sources */,
 				AE5961401A494D7500CB9DD2 /* TreeNode.m in Sources */,
 				AE5584A51ACA8E860007AE41 /* IntegerToColourTransformer.m in Sources */,

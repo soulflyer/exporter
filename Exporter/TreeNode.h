@@ -15,6 +15,7 @@
 @interface TreeNode : NSObject{
   NSString *entityName;
   BOOL      exported;
+  modifiedState modified;
   NSDate   *firstExport;
   NSDate   *lastExport;
   //Project *project;

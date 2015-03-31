@@ -10,7 +10,6 @@
 #import "TreeNode.h"
 #import "Project.h"
 #import "PreferencesWindowController.h"
-#import "BooleanToColourTransformer.h"
 
 @class Aperture;
 
@@ -40,11 +39,6 @@
 #define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"
 
-+(void)initialize{
-  NSLog(@"In initialize");
-  BooleanToColourTransformer *colourTransformer;
-  colourTransformer = [[BooleanToColourTransformer alloc] init];
-}
 - (void)awakeFromNib{
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *photosPath = [defaults stringForKey:photosPathKey];
@@ -60,8 +54,6 @@
     [defaults setObject:topFolders forKey:topFoldersKey];
   }
   [defaults synchronize];
-  //NSURL *photosURL = [NSURL URLWithString:[photosPath stringByStandardizingPath]];
-  //NSLog(@"Photos URL: %@",photosURL);
   
   aperture = [[NSClassFromString(@"Aperture") alloc] init];
   [aperture setup];
@@ -73,6 +65,10 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   [self setExportButtonState:true];
+  NSTreeNode *nd = [[[[treeController content][0] childNodes][0] childNodes][0] representedObject];
+  NSString *sd = [nd valueForKey:@"entityName"];
+  NSLog(@"Treecontroller content [0] %@ %@",nd,sd);
+  [nd setValue:@"eep" forKey:@"entityName"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -162,8 +158,6 @@ NSString* runCommand(NSString *commandToRun) {
 - (NSArray *)selectedProjects{
   NSMutableArray *returnArray;
   returnArray = [NSMutableArray arrayWithCapacity:1];
-  //Project *projectToExport;
-  //NSLog(@"In selectedProjects");
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length= [thing length];
     if (length < 3){
@@ -174,15 +168,12 @@ NSString* runCommand(NSString *commandToRun) {
       NSUInteger year    = indexes[0];
       NSUInteger month   = indexes[1];
       NSUInteger project = indexes[2];
-      //NSLog(@"year %lu month %lu project %lu", (unsigned long)year, (unsigned long)month, (unsigned long)project);
       NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
       NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
       NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
-      //projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
       [returnArray addObject:[Project projectWithName:projectName month:monthName year:yearName]];
     }
   }
-  //NSLog(@"returnArray %@",returnArray);
   return returnArray;
 }
 

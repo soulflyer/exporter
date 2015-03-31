@@ -10,6 +10,8 @@
 #import "TreeNode.h"
 #import "Project.h"
 #import "PreferencesWindowController.h"
+#import "BooleanToColourTransformer.h"
+
 @class Aperture;
 
 @interface Aperture:NSObject
@@ -22,6 +24,7 @@
 -(BOOL)teardown;
 -(BOOL)setExportDateOf:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)getNotes:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
+-(NSString *)isUptodate:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 @end
 
 @interface AppDelegate ()
@@ -37,6 +40,11 @@
 #define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"
 
++(void)initialize{
+  NSLog(@"In initialize");
+  BooleanToColourTransformer *colourTransformer;
+  colourTransformer = [[BooleanToColourTransformer alloc] init];
+}
 - (void)awakeFromNib{
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *photosPath = [defaults stringForKey:photosPathKey];
@@ -151,79 +159,100 @@ NSString* runCommand(NSString *commandToRun) {
   return [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
 }
 
-- (IBAction)export:(id)sender {
-  //[self setExportButtonState:false];
-//  NSArray *selectedNodes = [treeController selectedNodes];
-//  for (NSTreeNode *node in selectedNodes){
-//    NSLog(@"node: %@",[node representedObject]);
-//  }
+- (NSArray *)selectedProjects{
+  NSMutableArray *returnArray;
+  returnArray = [NSMutableArray arrayWithCapacity:1];
+  //Project *projectToExport;
+  //NSLog(@"In selectedProjects");
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length= [thing length];
     if (length < 3){
-      NSLog(@"Can't yet export folders of projects");
+      NSLog(@"Can't yet handle folders of projects");
     } else {
       NSUInteger indexes[3];
       [thing getIndexes:indexes];
       NSUInteger year    = indexes[0];
       NSUInteger month   = indexes[1];
       NSUInteger project = indexes[2];
+      //NSLog(@"year %lu month %lu project %lu", (unsigned long)year, (unsigned long)month, (unsigned long)project);
       NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
       NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
       NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
-
-      Project *projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
-
-      [self setStatusMessage:@"Exporting thumbnails"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
-      
-      [self setStatusMessage:@"Exporting medium"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
-      
-      [self setStatusMessage:@"Exporting large"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
-      
-      [self setStatusMessage:@"Exporting fullsize"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:projectName ofMonth:monthName ofYear: yearName toDirectory:[projectToExport fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
-      
-      [self setStatusMessage:@"Setting exported date"];
-      [[self window] displayIfNeeded];
-      [aperture setExportDateOf:projectName ofMonth:monthName ofYear:yearName];
-      
-      [self setStatusMessage:@"Getting notes"];
-      [[self window] displayIfNeeded];
-      NSString *notes=[aperture getNotes:projectName ofMonth:monthName ofYear:yearName];
-      NSLog(@"Notes %@",notes);
-      if (!notes) {
-        notes=(@"");
-      }
-      NSLog(@"Notes %@",notes);
-      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [projectToExport rootPath], notes, [projectToExport rootPath]];
-      //NSLog(@"%@",cmd);
-      runCommand(cmd);
-      
-      [self setStatusMessage:@"Building web page"];
-      [[self window] displayIfNeeded];
-      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[projectToExport rootPath]];
-      runCommand(cmd);
-      
-      [self setExportButtonState:true];
-      [self setStatusMessage:@"Export complete"];
-      [[self window] displayIfNeeded];
-      
-      [treeController setContent:[self generateApertureTree:apertureTree]];
-      //[outlineView reloadData];
-      
-//      for (NSTreeNode *node in selectedNodes){
-//        NSLog(@"node: %@",[node representedObject]);
-//        [outlineView expandItem:[node parentNode]];
-//      }
+      //projectToExport=[Project projectWithName:projectName month:monthName year:yearName];
+      [returnArray addObject:[Project projectWithName:projectName month:monthName year:yearName]];
     }
   }
+  //NSLog(@"returnArray %@",returnArray);
+  return returnArray;
 }
+
+- (IBAction)uptodate:(id)sender {
+  NSLog(@"Button Pressed");
+  for (Project *project in [self selectedProjects]){
+    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@ for pictures modified since last export",[project name]]];
+    NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
+    NSLog(@"isUptodate %@",isUptodate);
+    if ([isUptodate isEqualTo:@"NO"]) {
+      NSLog(@"%@ has modified pics",[project name]);
+    }else{
+      NSLog(@"%@ is clean",[project name]);
+    }
+  }
+  [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
+  [[self window] displayIfNeeded];
+}
+
+- (IBAction)export:(id)sender {
+  [self setExportButtonState:false];
+  
+  for (Project *project in [self selectedProjects]){
+    
+    [self setStatusMessage:@"Exporting thumbnails"];
+    [[self window] displayIfNeeded];
+    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+    
+    [self setStatusMessage:@"Exporting medium"];
+    [[self window] displayIfNeeded];
+    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+    
+    [self setStatusMessage:@"Exporting large"];
+    [[self window] displayIfNeeded];
+    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+    
+    [self setStatusMessage:@"Exporting fullsize"];
+    [[self window] displayIfNeeded];
+    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
+    
+    [self setStatusMessage:@"Setting exported date"];
+    [[self window] displayIfNeeded];
+    [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
+    
+    [self setStatusMessage:@"Getting notes"];
+    [[self window] displayIfNeeded];
+    NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
+    NSLog(@"Notes %@",notes);
+    if (!notes) {
+      notes=(@"");
+    }
+    NSLog(@"Notes %@",notes);
+    NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
+    //NSLog(@"%@",cmd);
+    runCommand(cmd);
+    
+    [self setStatusMessage:@"Building web page"];
+    [[self window] displayIfNeeded];
+    cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
+    runCommand(cmd);
+    
+    [self setExportButtonState:true];
+    [self setStatusMessage:@"Export complete"];
+    [[self window] displayIfNeeded];
+    
+    [treeController setContent:[self generateApertureTree:apertureTree]];
+    //[outlineView reloadData];
+  }
+}
+
 
 
 @end

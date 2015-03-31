@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Project.h"
+#import "IntegerToColourTransformer.h"
+
 @import AppKit;
 
 @interface TreeNode : NSObject{
@@ -20,6 +22,7 @@
 
 @property NSString * entityName;
 @property BOOL exported;
+@property modifiedState modified;
 @property NSDate *firstExport;
 @property NSDate *lastExport;
 

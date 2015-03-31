@@ -110,7 +110,9 @@ on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
   set theMonth   to theMonth   as string
   set theYear    to theYear    as string
   -- Make sure the modified time comes before the exported date
-  set edate to (current date) + 2 * minutes
+  -- Just guessing how far into the future the exported date needs to be
+  -- Has to be longer than it takes to set the IPTC data for all pics that need it.
+  set edate to (current date) + 30 * seconds
   set curyear to year of edate as string
   set curmonth to month of edate as string
   set curmonth to my monthToIntegerString:curmonth
@@ -130,6 +132,7 @@ on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
   if length of cursecs is 1 then
     set cursecs to "0" & cursecs
   end if
+  --TODO get this to read the actual timezone rather than just set it to +07
   set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
   log "Export date: " & exportedDate
   tell application "Aperture"
@@ -190,6 +193,53 @@ on getNotes:theProject ofMonth:theMonth ofYear:theYear
   end tell
   return notes
 end getNotes
+
+--------------------------------------------------------------------------------------------------------------------
+on isUptodate:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
+          set numPics to count of imagelist
+          repeat with image in imagelist
+            set modifiedDate to value of other tag "lastModifiedDate" of image
+            if (exists IPTC tag "ReferenceDate" of image) then
+              set exportedDateString to value of IPTC tag "ReferenceDate" of image
+            end if
+            set exportedDate to my stringToDate:exportedDateString
+            my logg:("Dates " & modifiedDate & space & exportedDate)
+            if (modifiedDate comes after exportedDate) then
+              my logg:(name of image & " modifiedDate comes after exportedDate")
+              return "NO"
+            else
+              my logg:(name of image & " exportedDate comes after modifiedDate")
+            end if
+          end repeat
+        end tell
+      end tell
+    end tell
+  end tell
+  return "YES"
+end isUptoDate
+
+--------------------------------------------------------------------------------------------------------------------
+on stringToDate:dateString
+  set yr to characters 1 thru 4 of dateString
+  set mn to characters 5 thru 6 of dateString
+  set dy to characters 7 thru 8 of dateString
+  set hrs to characters 10 thru 11 of dateString
+  set mns to characters 12 thru 13 of dateString
+  set secs to characters 14 thru 15 of dateString
+  set datestring to dy & "/" & mn & "/" & yr & " " & hrs & ":" & mns & ":" & secs as string
+  tell current application
+    set returnDate to date dateString as date
+  end tell
+  return returnDate
+end stringToDate
 
 --------------------------------------------------------------------------------------------------------------------
 on libraryPath()

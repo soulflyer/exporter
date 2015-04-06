@@ -21,7 +21,7 @@
 
 - (id)transformedValue:(id)value
 {
-  NSColor *cleanColour   = [NSColor colorWithRed:0 green:0.5 blue:0 alpha:1];
+  NSColor *cleanColour   = [NSColor colorWithRed:0.3 green:0.7 blue:0.1 alpha:1];
   NSColor *dirtyColour   = [NSColor colorWithRed:0.7 green:0 blue:0 alpha:1];
   NSColor *unknownColour = [NSColor blackColor];
   if ([value respondsToSelector:@selector(intValue)]) {

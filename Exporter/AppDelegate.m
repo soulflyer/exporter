@@ -10,6 +10,7 @@
 #import "TreeNode.h"
 #import "Project.h"
 #import "PreferencesWindowController.h"
+#import "IntegerToColourTransformer.h"
 
 @class Aperture;
 
@@ -65,10 +66,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
   [self setExportButtonState:true];
-  NSTreeNode *nd = [[[[treeController content][0] childNodes][0] childNodes][0] representedObject];
-  NSString *sd = [nd valueForKey:@"entityName"];
-  NSLog(@"Treecontroller content [0] %@ %@",nd,sd);
-  [nd setValue:@"eep" forKey:@"entityName"];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -155,38 +152,113 @@ NSString* runCommand(NSString *commandToRun) {
   return [[NSString alloc] initWithData: data encoding: NSUTF8StringEncoding];
 }
 
-- (NSArray *)selectedProjects{
-  NSMutableArray *returnArray;
-  returnArray = [NSMutableArray arrayWithCapacity:1];
-  for (id thing in [treeController selectionIndexPaths]){
-    NSUInteger length= [thing length];
-    if (length < 3){
-      NSLog(@"Can't yet handle folders of projects");
-    } else {
-      NSUInteger indexes[3];
-      [thing getIndexes:indexes];
-      NSUInteger year    = indexes[0];
-      NSUInteger month   = indexes[1];
-      NSUInteger project = indexes[2];
-      NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
-      NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
-      NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
-      [returnArray addObject:[Project projectWithName:projectName month:monthName year:yearName]];
+- (NSArray *)selectedProjectIndexes{
+  NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:1];
+  for (id projectIndex in [treeController selectionIndexPaths]){
+    NSUInteger length= [projectIndex length];
+    if (length == 3){
+      [returnArray addObject:projectIndex];
     }
+  }
+  return [NSArray arrayWithArray:returnArray];
+}
+
+- (NSArray *)selectedProjects{
+  NSArray *indexArray = [self selectedProjectIndexes];
+  NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:1];
+  for (id index in indexArray) {
+    [returnArray addObject:[self projectFromIndexPath:index]];
   }
   return returnArray;
 }
 
+//- (NSArray *)selectedProjects{
+//  NSMutableArray *returnArray;
+//  returnArray = [NSMutableArray arrayWithCapacity:1];
+//  for (id thing in [treeController selectionIndexPaths]){
+//    NSUInteger length= [thing length];
+//    if (length < 3){
+//      NSLog(@"Can't yet handle folders of projects");
+//    } else {
+//      [returnArray addObject:[self projectFromIndexPath:thing]];
+//    }
+//  }
+//  return returnArray;
+//}
+
+//-(NSArray *)allProjects{
+//  NSMutableArray *returnArray;
+//  returnArray = [NSMutableArray arrayWithCapacity:1];
+//  //select all and return any that have length == 3 ?
+//  //[treeController selec]
+//  for (id proj in [treeController selectionIndexPaths]){
+//    NSUInteger length= [proj length];
+//    if (length == 3){
+//      [returnArray addObject:[self projectFromIndexPath:proj]];
+//    }
+//  }
+//  return returnArray;
+//}
+
+-(void)markSelectedProjectsWithState:(enum modifiedState)state{
+  for (id thing in [treeController selectionIndexPaths]){
+    NSUInteger length = [thing length];
+    if (length == 3){
+      [self markProjectAtIndexPath:thing withState:state];
+    }
+  }
+}
+
+//-(void)markSelectedProjectWithState:(enum modifiedState)state{
+//  id thing = [treeController selectionIndexPaths];
+//    NSUInteger length = [thing length];
+//    if (length == 3){
+//      [self markProjectAtIndexPath:thing withState:state];
+//    }
+//}
+
+
+-(void)markProjectAtIndexPath:(NSIndexPath *)indexPath withState:(enum modifiedState)state{
+  NSUInteger indexes[3];
+  [indexPath getIndexes:indexes];
+  NSUInteger year    = indexes[0];
+  NSUInteger month   = indexes[1];
+  NSUInteger project = indexes[2];
+  NSTreeNode *nd = [[[[treeController content][year] childNodes][month] childNodes][project] representedObject];
+  [nd setValue:[NSString stringWithFormat:@"%d",state]  forKey:@"modified"];
+}
+
+-(Project *)projectFromIndexPath:(NSIndexPath *)indexPath{
+    NSUInteger indexes[3];
+    [indexPath getIndexes:indexes];
+    NSUInteger year    = indexes[0];
+    NSUInteger month   = indexes[1];
+    NSUInteger project = indexes[2];
+    NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
+    NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
+    NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
+    return[Project projectWithName:projectName month:monthName year:yearName];
+}
+
 - (IBAction)uptodate:(id)sender {
   NSLog(@"Button Pressed");
-  for (Project *project in [self selectedProjects]){
+  [self setStatusMessage:@"Checking projects for updated pics"];
+  [[self window] displayIfNeeded];
+
+  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
+    Project *project = [self projectFromIndexPath:indexPath];
     [self setStatusMessage:[NSString stringWithFormat:@"Checking %@ for pictures modified since last export",[project name]]];
+    [[self window] displayIfNeeded];
     NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
     NSLog(@"isUptodate %@",isUptodate);
     if ([isUptodate isEqualTo:@"NO"]) {
       NSLog(@"%@ has modified pics",[project name]);
+      [self markProjectAtIndexPath:indexPath withState:dirty];
+      [[self window] displayIfNeeded];
     }else{
       NSLog(@"%@ is clean",[project name]);
+      [self markProjectAtIndexPath:indexPath withState:clean];
+      [[self window] displayIfNeeded];
     }
   }
   [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
@@ -238,10 +310,9 @@ NSString* runCommand(NSString *commandToRun) {
     [self setExportButtonState:true];
     [self setStatusMessage:@"Export complete"];
     [[self window] displayIfNeeded];
-    
-    [treeController setContent:[self generateApertureTree:apertureTree]];
-    //[outlineView reloadData];
   }
+  [self markSelectedProjectsWithState:clean];
+  //[treeController setContent:[self generateApertureTree:apertureTree]];
 }
 
 

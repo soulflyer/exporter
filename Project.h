@@ -15,6 +15,7 @@
 @property NSString *year;
 @property NSString *month;
 @property NSString *name;
+
 + (Project  *)projectWithName:(NSString *)prName month:(NSString *)month year:(NSString *)year;
 - (BOOL      )exported;
 - (NSDate   *)firstExportDate;

@@ -37,7 +37,7 @@
   treeNode.exported    = exported;
   treeNode.firstExport = firstExport;
   treeNode.lastExport  = lastExport;
-  treeNode.modified    = dirty;
+  treeNode.modified    = unknown;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
 

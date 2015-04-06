@@ -112,7 +112,7 @@ on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
   -- Make sure the modified time comes before the exported date
   -- Just guessing how far into the future the exported date needs to be
   -- Has to be longer than it takes to set the IPTC data for all pics that need it.
-  set edate to (current date) + 30 * seconds
+  set edate to (current date) + 2 * minutes
   set curyear to year of edate as string
   set curmonth to month of edate as string
   set curmonth to my monthToIntegerString:curmonth
@@ -159,7 +159,10 @@ on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermar
   set watermark to watermark as string
   set tempPath to my getTempDir()
   tell application "Aperture"
-    export selection naming files with file naming policy "Version Name" using export setting theExportSetting to tempPath
+    with timeout of 3600 seconds
+    -- need a larger timeout than default, or large projects fail to complete
+      export selection naming files with file naming policy "Version Name" using export setting theExportSetting to tempPath
+    end timeout
   end tell
   if watermark equals "true" then
     set thescript to "/Users/iain/bin/add-watermark " & tempPath & "/*.jpg "

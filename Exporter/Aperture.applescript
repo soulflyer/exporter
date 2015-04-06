@@ -214,12 +214,9 @@ on isUptodate:theProject ofMonth:theMonth ofYear:theYear
               set exportedDateString to value of IPTC tag "ReferenceDate" of image
             end if
             set exportedDate to my stringToDate:exportedDateString
-            my logg:("Dates " & modifiedDate & space & exportedDate)
             if (modifiedDate comes after exportedDate) then
               my logg:(name of image & " modifiedDate comes after exportedDate")
               return "NO"
-            else
-              my logg:(name of image & " exportedDate comes after modifiedDate")
             end if
           end repeat
         end tell

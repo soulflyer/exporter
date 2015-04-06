@@ -172,34 +172,6 @@ NSString* runCommand(NSString *commandToRun) {
   return returnArray;
 }
 
-//- (NSArray *)selectedProjects{
-//  NSMutableArray *returnArray;
-//  returnArray = [NSMutableArray arrayWithCapacity:1];
-//  for (id thing in [treeController selectionIndexPaths]){
-//    NSUInteger length= [thing length];
-//    if (length < 3){
-//      NSLog(@"Can't yet handle folders of projects");
-//    } else {
-//      [returnArray addObject:[self projectFromIndexPath:thing]];
-//    }
-//  }
-//  return returnArray;
-//}
-
-//-(NSArray *)allProjects{
-//  NSMutableArray *returnArray;
-//  returnArray = [NSMutableArray arrayWithCapacity:1];
-//  //select all and return any that have length == 3 ?
-//  //[treeController selec]
-//  for (id proj in [treeController selectionIndexPaths]){
-//    NSUInteger length= [proj length];
-//    if (length == 3){
-//      [returnArray addObject:[self projectFromIndexPath:proj]];
-//    }
-//  }
-//  return returnArray;
-//}
-
 -(void)markSelectedProjectsWithState:(enum modifiedState)state{
   for (id thing in [treeController selectionIndexPaths]){
     NSUInteger length = [thing length];
@@ -208,15 +180,6 @@ NSString* runCommand(NSString *commandToRun) {
     }
   }
 }
-
-//-(void)markSelectedProjectWithState:(enum modifiedState)state{
-//  id thing = [treeController selectionIndexPaths];
-//    NSUInteger length = [thing length];
-//    if (length == 3){
-//      [self markProjectAtIndexPath:thing withState:state];
-//    }
-//}
-
 
 -(void)markProjectAtIndexPath:(NSIndexPath *)indexPath withState:(enum modifiedState)state{
   NSUInteger indexes[3];
@@ -241,25 +204,23 @@ NSString* runCommand(NSString *commandToRun) {
 }
 
 - (IBAction)uptodate:(id)sender {
-  NSLog(@"Button Pressed");
   [self setStatusMessage:@"Checking projects for updated pics"];
   [[self window] displayIfNeeded];
 
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
+    [treeController removeSelectionIndexPaths:[NSArray arrayWithObjects:indexPath, nil]];
     Project *project = [self projectFromIndexPath:indexPath];
-    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@ for pictures modified since last export",[project name]]];
+    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
     [[self window] displayIfNeeded];
     NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
-    NSLog(@"isUptodate %@",isUptodate);
     if ([isUptodate isEqualTo:@"NO"]) {
       NSLog(@"%@ has modified pics",[project name]);
       [self markProjectAtIndexPath:indexPath withState:dirty];
-      [[self window] displayIfNeeded];
     }else{
       NSLog(@"%@ is clean",[project name]);
       [self markProjectAtIndexPath:indexPath withState:clean];
-      [[self window] displayIfNeeded];
     }
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
   }
   [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
   [[self window] displayIfNeeded];

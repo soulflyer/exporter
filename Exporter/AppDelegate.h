@@ -14,6 +14,7 @@
   NSArray *apertureTree;
   IBOutlet NSOutlineView *outlineView;
   IBOutlet NSTreeController *treeController;
+  //IBOutlet NSTextView *consoleWindow;
   //IBOutlet NSString *statusMessage;
   IBOutlet PreferencesWindowController *preferencesWindowController;
 }
@@ -21,5 +22,6 @@
 @property (assign) NSInteger numberValue;
 @property (assign) NSString* statusMessage;
 @property (assign) BOOL exportButtonState;
+@property (assign) NSTextView* consoleWindow;
 @end
 

@@ -207,7 +207,7 @@ on isUptodate:theProject ofMonth:theMonth ofYear:theYear
       tell folder theMonth
         tell project theProject
           set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
-          set numPics to count of imagelist
+--          set numPics to count of imagelist
           repeat with image in imagelist
             set modifiedDate to value of other tag "lastModifiedDate" of image
             if (exists IPTC tag "ReferenceDate" of image) then
@@ -226,6 +226,33 @@ on isUptodate:theProject ofMonth:theMonth ofYear:theYear
   return "YES"
 end isUptoDate
 
+--------------------------------------------------------------------------------------------------------------------
+on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  set modifiedList to {}
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
+          repeat with image in imagelist
+            set modifiedDate to value of other tag "lastModifiedDate" of image
+            if (exists IPTC tag "ReferenceDate" of image) then
+              set exportedDateString to value of IPTC tag "ReferenceDate" of image
+            end if
+            set exportedDate to my stringToDate:exportedDateString
+            if (modifiedDate comes after exportedDate) then
+              set end of modifiedList to name of image
+            end if
+          end repeat
+        end tell
+      end tell
+    end tell
+  end tell
+  return modifiedList
+end modifiedPics
 --------------------------------------------------------------------------------------------------------------------
 on stringToDate:dateString
   set yr to characters 1 thru 4 of dateString

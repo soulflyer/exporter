@@ -25,6 +25,7 @@
 -(BOOL)setExportDateOf:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)getNotes:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)isUptodate:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
+-(NSArray *)modifiedPics:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 @end
 
 @interface AppDelegate ()
@@ -202,22 +203,23 @@ NSString* runCommand(NSString *commandToRun) {
     NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
     return[Project projectWithName:projectName month:monthName year:yearName];
 }
-
-- (IBAction)uptodate:(id)sender {
+- (IBAction)modified:(id)sender {
   [self setStatusMessage:@"Checking projects for updated pics"];
   [[self window] displayIfNeeded];
-
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     [treeController removeSelectionIndexPaths:[NSArray arrayWithObjects:indexPath, nil]];
     Project *project = [self projectFromIndexPath:indexPath];
     [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
     [[self window] displayIfNeeded];
-    NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
-    if ([isUptodate isEqualTo:@"NO"]) {
-      NSLog(@"%@ has modified pics",[project name]);
+    NSArray *modifiedPics = [aperture modifiedPics:[project name] ofMonth:[project month] ofYear:[project year]];
+    NSLog(@"Modified %@",modifiedPics);
+    [self setStatusMessage:[NSString stringWithFormat:@"Check complete, found %lu pics", (unsigned long)[modifiedPics count]]];
+    if ([modifiedPics count] > 0) {
+      [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@ ",[project name]]];
+      [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@\n",modifiedPics]];
+      [[self window] displayIfNeeded];
       [self markProjectAtIndexPath:indexPath withState:dirty];
     }else{
-      NSLog(@"%@ is clean",[project name]);
       [self markProjectAtIndexPath:indexPath withState:clean];
     }
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
@@ -225,7 +227,31 @@ NSString* runCommand(NSString *commandToRun) {
   [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
   [[self window] displayIfNeeded];
 }
-
+//
+//- (IBAction)uptodate:(id)sender {
+//  [self setStatusMessage:@"Checking projects for updated pics"];
+//  [[self window] displayIfNeeded];
+//
+//  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
+//    [treeController removeSelectionIndexPaths:[NSArray arrayWithObjects:indexPath, nil]];
+//    Project *project = [self projectFromIndexPath:indexPath];
+//    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
+//    //[[self consoleWindow] insertText:[NSString stringWithFormat:@"Checking %@",[project name]]];
+//    [[self window] displayIfNeeded];
+//    NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
+//    if ([isUptodate isEqualTo:@"NO"]) {
+//      NSLog(@"%@ has modified pics",[project name]);
+//      [self markProjectAtIndexPath:indexPath withState:dirty];
+//    }else{
+//      NSLog(@"%@ is clean",[project name]);
+//      [self markProjectAtIndexPath:indexPath withState:clean];
+//    }
+//    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
+//  }
+//  [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
+//  [[self window] displayIfNeeded];
+//}
+//
 - (IBAction)export:(id)sender {
   [self setExportButtonState:false];
   

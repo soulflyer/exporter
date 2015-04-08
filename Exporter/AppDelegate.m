@@ -20,9 +20,11 @@
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
 -(BOOL)exportProject:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
+-(BOOL)exportProjectModified:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
 -(BOOL)setup;
 -(BOOL)teardown;
 -(BOOL)setExportDateOf:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
+-(BOOL)setExportDateOfModified:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)getNotes:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)isUptodate:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSArray *)modifiedPics:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
@@ -40,6 +42,8 @@
 #define photosPathKey @"photosPath"
 #define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"
+#define defaultMastersPath @"~/Pictures/Photos"
+#define mastersPathKey @"mastersPath"
 
 - (void)awakeFromNib{
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -54,6 +58,12 @@
     NSLog(@"topFolders was nil");
     topFolders = defaultTopFolders;
     [defaults setObject:topFolders forKey:topFoldersKey];
+  }
+  NSString *mastersPath = [defaults objectForKey:mastersPathKey];
+  if (mastersPath ==nil) {
+    NSLog(@"mastersPath was nil");
+    mastersPath = defaultMastersPath;
+    [defaults setObject:mastersPath forKey:mastersPathKey];
   }
   [defaults synchronize];
   
@@ -193,21 +203,21 @@ NSString* runCommand(NSString *commandToRun) {
 }
 
 -(Project *)projectFromIndexPath:(NSIndexPath *)indexPath{
-    NSUInteger indexes[3];
-    [indexPath getIndexes:indexes];
-    NSUInteger year    = indexes[0];
-    NSUInteger month   = indexes[1];
-    NSUInteger project = indexes[2];
-    NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
-    NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
-    NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
-    return[Project projectWithName:projectName month:monthName year:yearName];
+  NSUInteger indexes[3];
+  [indexPath getIndexes:indexes];
+  NSUInteger year    = indexes[0];
+  NSUInteger month   = indexes[1];
+  NSUInteger project = indexes[2];
+  NSString *yearName    = [apertureTree[year] objectForKey:@"yearName"];
+  NSString *monthName   = [[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"monthName"];
+  NSString *projectName = [[[apertureTree[year] objectForKey:@"months"][month] objectForKey:@"projectNames"][project] objectForKey:@"projectName"];
+  return[Project projectWithName:projectName month:monthName year:yearName];
 }
+
 - (IBAction)modified:(id)sender {
   [self setStatusMessage:@"Checking projects for updated pics"];
   [[self window] displayIfNeeded];
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
-    [treeController removeSelectionIndexPaths:[NSArray arrayWithObjects:indexPath, nil]];
     Project *project = [self projectFromIndexPath:indexPath];
     [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
     [[self window] displayIfNeeded];
@@ -227,80 +237,129 @@ NSString* runCommand(NSString *commandToRun) {
   [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
   [[self window] displayIfNeeded];
 }
-//
-//- (IBAction)uptodate:(id)sender {
-//  [self setStatusMessage:@"Checking projects for updated pics"];
-//  [[self window] displayIfNeeded];
-//
-//  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
-//    [treeController removeSelectionIndexPaths:[NSArray arrayWithObjects:indexPath, nil]];
-//    Project *project = [self projectFromIndexPath:indexPath];
-//    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
-//    //[[self consoleWindow] insertText:[NSString stringWithFormat:@"Checking %@",[project name]]];
-//    [[self window] displayIfNeeded];
-//    NSString *isUptodate = [aperture isUptodate:[project name] ofMonth:[project month] ofYear:[project year]];
-//    if ([isUptodate isEqualTo:@"NO"]) {
-//      NSLog(@"%@ has modified pics",[project name]);
-//      [self markProjectAtIndexPath:indexPath withState:dirty];
-//    }else{
-//      NSLog(@"%@ is clean",[project name]);
-//      [self markProjectAtIndexPath:indexPath withState:clean];
-//    }
-//    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
-//  }
-//  [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
-//  [[self window] displayIfNeeded];
-//}
-//
+
 - (IBAction)export:(id)sender {
   [self setExportButtonState:false];
-  
-  for (Project *project in [self selectedProjects]){
+  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
+    Project *project = [self projectFromIndexPath:indexPath];
+    NSLog(@"mastersPath %@",[[project mastersPath] stringByExpandingTildeInPath]);
     
-    [self setStatusMessage:@"Exporting thumbnails"];
-    [[self window] displayIfNeeded];
-    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
-    
-    [self setStatusMessage:@"Exporting medium"];
-    [[self window] displayIfNeeded];
-    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
-    
-    [self setStatusMessage:@"Exporting large"];
-    [[self window] displayIfNeeded];
-    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
-    
-    [self setStatusMessage:@"Exporting fullsize"];
-    [[self window] displayIfNeeded];
-    [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
-    
-    [self setStatusMessage:@"Setting exported date"];
-    [[self window] displayIfNeeded];
-    [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
-    
-    [self setStatusMessage:@"Getting notes"];
-    [[self window] displayIfNeeded];
-    NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
-    NSLog(@"Notes %@",notes);
-    if (!notes) {
-      notes=(@"");
+    //Check if the photos are online
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
+      
+      
+      [self setStatusMessage:@"Exporting thumbnails"];
+      [[self window] displayIfNeeded];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      
+      [self setStatusMessage:@"Exporting medium"];
+      [[self window] displayIfNeeded];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting large"];
+      [[self window] displayIfNeeded];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting fullsize"];
+      [[self window] displayIfNeeded];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
+      
+      [self setStatusMessage:@"Setting exported date"];
+      [[self window] displayIfNeeded];
+      [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
+      
+      [self setStatusMessage:@"Getting notes"];
+      [[self window] displayIfNeeded];
+      NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
+      NSLog(@"Notes %@",notes);
+      if (!notes) {
+        notes=(@"");
+      }
+      NSLog(@"Notes %@",notes);
+      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
+      //NSLog(@"%@",cmd);
+      runCommand(cmd);
+      
+      [self setStatusMessage:@"Building web page"];
+      [[self window] displayIfNeeded];
+      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
+      runCommand(cmd);
+      
+      [self setExportButtonState:true];
+      [self markProjectAtIndexPath:indexPath withState:clean];
+      [self setStatusMessage:@"Export complete"];
+      [[self window] displayIfNeeded];
+    }else{
+      NSLog(@"Masters are not online");
+      [self setStatusMessage:[NSString stringWithFormat:@"Masters for %@ are not online", [project name]]];
+      [[self window] displayIfNeeded];
     }
-    NSLog(@"Notes %@",notes);
-    NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
-    //NSLog(@"%@",cmd);
-    runCommand(cmd);
-    
-    [self setStatusMessage:@"Building web page"];
-    [[self window] displayIfNeeded];
-    cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
-    runCommand(cmd);
-    
-    [self setExportButtonState:true];
-    [self setStatusMessage:@"Export complete"];
-    [[self window] displayIfNeeded];
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
   }
-  [self markSelectedProjectsWithState:clean];
+}
+
+
+- (IBAction)exportModified:(id)sender {
+  [self setExportButtonState:false];
+  
+  //for (Project *project in [self selectedProjects]){
+  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
+    Project *project = [self projectFromIndexPath:indexPath];
+    //Check if the photos are online
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
+      
+      [self setStatusMessage:@"Exporting thumbnails"];
+      [[self window] displayIfNeeded];
+      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      
+      [self setStatusMessage:@"Exporting medium"];
+      [[self window] displayIfNeeded];
+      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting large"];
+      [[self window] displayIfNeeded];
+      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      
+      [self setStatusMessage:@"Exporting fullsize"];
+      [[self window] displayIfNeeded];
+      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
+      
+      [self setStatusMessage:@"Setting exported date"];
+      [[self window] displayIfNeeded];
+      [aperture setExportDateOfModified:[project name] ofMonth:[project month] ofYear:[project year]];
+      
+      [self setStatusMessage:@"Getting notes"];
+      [[self window] displayIfNeeded];
+      NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
+      NSLog(@"Notes %@",notes);
+      if (!notes) {
+        notes=(@"");
+      }
+      NSLog(@"Notes %@",notes);
+      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
+      //NSLog(@"%@",cmd);
+      runCommand(cmd);
+      
+      [self setStatusMessage:@"Building web page"];
+      [[self window] displayIfNeeded];
+      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
+      runCommand(cmd);
+      
+      [self setExportButtonState:true];
+      [self markProjectAtIndexPath:indexPath withState:clean];
+      [self setStatusMessage:@"Export complete"];
+      [[self window] displayIfNeeded];
+    }else{
+      NSLog(@"Masters are not online");
+      [self setStatusMessage:[NSString stringWithFormat:@"Masters for %@ are not online", [project name]]];
+      [[self window] displayIfNeeded];
+    }
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
+  }
+  //[self markSelectedProjectsWithState:clean];
   //[treeController setContent:[self generateApertureTree:apertureTree]];
 }
+
 
 
 

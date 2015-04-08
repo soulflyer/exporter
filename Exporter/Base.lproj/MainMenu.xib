@@ -846,6 +846,19 @@ DQ
                             <action selector="modified:" target="Voe-Tx-rLC" id="KXh-Lx-tCM"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" id="u0K-UN-5mf">
+                        <rect key="frame" x="429" y="13" width="138" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Export Modified" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2jJ-BX-n4o">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent">e</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="exportModified:" target="Voe-Tx-rLC" id="hFd-a0-GSr"/>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="exportButtonState" id="AJN-Ul-i4L"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
             <point key="canvasLocation" x="214.5" y="110"/>

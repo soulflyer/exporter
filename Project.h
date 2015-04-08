@@ -28,4 +28,5 @@
 - (NSString *)largePath;
 - (NSString *)fullsizePath;
 - (NSString *)rootPath;
+- (NSString *)mastersPath;
 @end

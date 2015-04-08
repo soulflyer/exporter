@@ -115,4 +115,9 @@
   NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
   return [NSString stringWithFormat:@"%@%@",[def stringForKey:@"photosPath"],[self path]];
 }
+
+-(NSString *)mastersPath{
+  NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+  return [NSString stringWithFormat:@"%@%@",[def stringForKey:@"mastersPath"],[self path]];
+}
 @end

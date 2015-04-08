@@ -60,31 +60,6 @@ script Aperture
   end getAllProjects
   
 --------------------------------------------------------------------------------------------------------------------
---on setUrgency(pr)
---		tell application "Aperture"
---      tell project pr
---        -- Digikam uses Urgency to store the ratings, so convert Aperture rating to urgency
---        tell (every image version where main rating is 5)
---          make new IPTC tag with properties {name:"Urgency", value:"1"}
---        end tell
---        tell (every image version where main rating is 4)
---          make new IPTC tag with properties {name:"Urgency", value:"2"}
---        end tell
---        tell (every image version where main rating is 3)
---          make new IPTC tag with properties {name:"Urgency", value:"4"}
---        end tell
---        tell (every image version where main rating is 2)
---          make new IPTC tag with properties {name:"Urgency", value:"5"}
---        end tell
---        tell (every image version where main rating is 1)
---          make new IPTC tag with properties {name:"Urgency", value:"6"}
---        end tell
---      end tell
---    end tell
---end setUrgency
-
-
---------------------------------------------------------------------------------------------------------------------
 on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark
   log "exportProject starting export to " & thePath
   set thePath    to thePath    as string
@@ -102,6 +77,38 @@ on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath 
     end tell
   end tell
   my exportPics:curSel toDirectory:thePath atSize:theSize withWatermark:watermark  
+end exportProject
+
+--------------------------------------------------------------------------------------------------------------------
+on exportProjectModified:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark
+  log "exportProject starting export to " & thePath
+  set thePath    to thePath    as string
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  set modifiedList to {}
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
+          repeat with image in imagelist
+            set modifiedDate to value of other tag "lastModifiedDate" of image
+            if (exists IPTC tag "ReferenceDate" of image) then
+              set exportedDateString to value of IPTC tag "ReferenceDate" of image
+            end if
+            set exportedDate to my stringToDate:exportedDateString
+            if (modifiedDate comes after exportedDate) then
+              set end of modifiedList to image
+            end if
+          end repeat
+        end tell
+      end tell
+    end tell
+  end tell
+  if length of modifiedList is greater than 0 then
+    my exportPics:modifiedList toDirectory:thePath atSize:theSize withWatermark:watermark
+  end if
 end exportProject
 
 --------------------------------------------------------------------------------------------------------------------
@@ -145,13 +152,75 @@ on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
     end tell
     repeat with pic in cursel
       tell pic
+        --TODO check picture master is online before changing the exportedDate
         (my logg:("setting export date of " & name))
         make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
       end tell
     end repeat
   end tell
   return true
-end setExportProjectDate
+end setExportDateOf
+
+--------------------------------------------------------------------------------------------------------------------
+on setExportDateOfModified:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  -- Make sure the modified time comes before the exported date
+  -- Just guessing how far into the future the exported date needs to be
+  -- Has to be longer than it takes to set the IPTC data for all pics that need it.
+  set edate to (current date) + 2 * minutes
+  set curyear to year of edate as string
+  set curmonth to month of edate as string
+  set curmonth to my monthToIntegerString:curmonth
+  set curday to day of edate as string
+  set modifiedList to {}
+  if length of curday is 1 then
+    set curday to "0" & curday
+  end if
+  set curhour to hours of edate as string
+  if length of curhour is 1 then
+    set curhour to "0" & curhour
+  end if
+  set curmins to minutes of edate as string
+  if length of curmins is 1 then
+    set curmins to "0" & curmins
+  end if
+  set cursecs to seconds of edate as string
+  if length of cursecs is 1 then
+    set cursecs to "0" & cursecs
+  end if
+  --TODO get this to read the actual timezone rather than just set it to +07
+  set exportedDate to curyear & curmonth & curday & "T" & curhour & curmins & cursecs & "+07"
+  log "Export date: " & exportedDate
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set imagelist to (every image version where (main rating is greater than 2) or (color label is red)) as list
+          repeat with image in imagelist
+            set modifiedDate to value of other tag "lastModifiedDate" of image
+            if (exists IPTC tag "ReferenceDate" of image) then
+              set exportedDateString to value of IPTC tag "ReferenceDate" of image
+            end if
+            set exportedDateVal to my stringToDate:exportedDateString
+            if (modifiedDate comes after exportedDateVal) then
+              set end of modifiedList to image
+            end if
+          end repeat
+        end tell
+      end tell
+    end tell
+    repeat with pic in modifiedList
+      tell pic
+        --TODO check picture master is online before changing the exportedDate
+        (my logg:("setting export date of " & name))
+        make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
+      end tell
+    end repeat
+  end tell
+  return true
+end setExportDateOfModified
 
 --------------------------------------------------------------------------------------------------------------------
 on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermark:watermark
@@ -198,40 +267,12 @@ on getNotes:theProject ofMonth:theMonth ofYear:theYear
 end getNotes
 
 --------------------------------------------------------------------------------------------------------------------
-on isUptodate:theProject ofMonth:theMonth ofYear:theYear
-  set theProject to theProject as string
-  set theMonth   to theMonth   as string
-  set theYear    to theYear    as string
-  tell application "Aperture"
-    tell folder theYear
-      tell folder theMonth
-        tell project theProject
-          set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
---          set numPics to count of imagelist
-          repeat with image in imagelist
-            set modifiedDate to value of other tag "lastModifiedDate" of image
-            if (exists IPTC tag "ReferenceDate" of image) then
-              set exportedDateString to value of IPTC tag "ReferenceDate" of image
-            end if
-            set exportedDate to my stringToDate:exportedDateString
-            if (modifiedDate comes after exportedDate) then
-              my logg:(name of image & " modifiedDate comes after exportedDate")
-              return "NO"
-            end if
-          end repeat
-        end tell
-      end tell
-    end tell
-  end tell
-  return "YES"
-end isUptoDate
-
---------------------------------------------------------------------------------------------------------------------
 on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
   set theProject to theProject as string
   set theMonth   to theMonth   as string
   set theYear    to theYear    as string
   set modifiedList to {}
+  set exportedDateString to ""
   tell application "Aperture"
     tell folder theYear
       tell folder theMonth
@@ -253,6 +294,7 @@ on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
   end tell
   return modifiedList
 end modifiedPics
+
 --------------------------------------------------------------------------------------------------------------------
 on stringToDate:dateString
   set yr to characters 1 thru 4 of dateString

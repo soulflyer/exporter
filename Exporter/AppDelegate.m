@@ -19,8 +19,7 @@
 +(NSString *)libraryPath;
 -(NSString *)libraryPath;
 -(NSArray  *)getAllProjects;
--(BOOL)exportProject:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
--(BOOL)exportProjectModified:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark;
+-(BOOL)exportProject:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear toDirectory:(NSString *)thePath atSize:(NSString *)theSize withWatermark:(NSString *)watermark exportEverything:(NSString *)everything;
 -(BOOL)setup;
 -(BOOL)teardown;
 -(BOOL)setExportDateOf:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
@@ -174,24 +173,6 @@ NSString* runCommand(NSString *commandToRun) {
   return [NSArray arrayWithArray:returnArray];
 }
 
-- (NSArray *)selectedProjects{
-  NSArray *indexArray = [self selectedProjectIndexes];
-  NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:1];
-  for (id index in indexArray) {
-    [returnArray addObject:[self projectFromIndexPath:index]];
-  }
-  return returnArray;
-}
-
--(void)markSelectedProjectsWithState:(enum modifiedState)state{
-  for (id thing in [treeController selectionIndexPaths]){
-    NSUInteger length = [thing length];
-    if (length == 3){
-      [self markProjectAtIndexPath:thing withState:state];
-    }
-  }
-}
-
 -(void)markProjectAtIndexPath:(NSIndexPath *)indexPath withState:(enum modifiedState)state{
   NSUInteger indexes[3];
   [indexPath getIndexes:indexes];
@@ -238,8 +219,11 @@ NSString* runCommand(NSString *commandToRun) {
   [[self window] displayIfNeeded];
 }
 
-- (IBAction)export:(id)sender {
-  [self setExportButtonState:false];
+- (void)doExport:(BOOL)full{
+  NSString *fullString = @"false";
+  if (full) {
+    fullString = @"true";
+  }
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     Project *project = [self projectFromIndexPath:indexPath];
     NSLog(@"mastersPath %@",[[project mastersPath] stringByExpandingTildeInPath]);
@@ -250,19 +234,19 @@ NSString* runCommand(NSString *commandToRun) {
       
       [self setStatusMessage:@"Exporting thumbnails"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
       
       [self setStatusMessage:@"Exporting medium"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
       
       [self setStatusMessage:@"Exporting large"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
       
       [self setStatusMessage:@"Exporting fullsize"];
       [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
+      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
       
       [self setStatusMessage:@"Setting exported date"];
       [[self window] displayIfNeeded];
@@ -299,68 +283,17 @@ NSString* runCommand(NSString *commandToRun) {
 }
 
 
-- (IBAction)exportModified:(id)sender {
+- (IBAction)export:(id)sender {
   [self setExportButtonState:false];
-  
-  //for (Project *project in [self selectedProjects]){
-  for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
-    Project *project = [self projectFromIndexPath:indexPath];
-    //Check if the photos are online
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
-      
-      [self setStatusMessage:@"Exporting thumbnails"];
-      [[self window] displayIfNeeded];
-      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false"];
-      
-      [self setStatusMessage:@"Exporting medium"];
-      [[self window] displayIfNeeded];
-      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true"];
-      
-      [self setStatusMessage:@"Exporting large"];
-      [[self window] displayIfNeeded];
-      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true"];
-      
-      [self setStatusMessage:@"Exporting fullsize"];
-      [[self window] displayIfNeeded];
-      [aperture exportProjectModified:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false"];
-      
-      [self setStatusMessage:@"Setting exported date"];
-      [[self window] displayIfNeeded];
-      [aperture setExportDateOfModified:[project name] ofMonth:[project month] ofYear:[project year]];
-      
-      [self setStatusMessage:@"Getting notes"];
-      [[self window] displayIfNeeded];
-      NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
-      NSLog(@"Notes %@",notes);
-      if (!notes) {
-        notes=(@"");
-      }
-      NSLog(@"Notes %@",notes);
-      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
-      //NSLog(@"%@",cmd);
-      runCommand(cmd);
-      
-      [self setStatusMessage:@"Building web page"];
-      [[self window] displayIfNeeded];
-      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
-      runCommand(cmd);
-      
-      [self setExportButtonState:true];
-      [self markProjectAtIndexPath:indexPath withState:clean];
-      [self setStatusMessage:@"Export complete"];
-      [[self window] displayIfNeeded];
-    }else{
-      NSLog(@"Masters are not online");
-      [self setStatusMessage:[NSString stringWithFormat:@"Masters for %@ are not online", [project name]]];
-      [[self window] displayIfNeeded];
-    }
-    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
-  }
-  //[self markSelectedProjectsWithState:clean];
-  //[treeController setContent:[self generateApertureTree:apertureTree]];
+  [self doExport:true];
+  [self setExportButtonState:true];
 }
 
 
-
+- (IBAction)exportModified:(id)sender {
+  [self setExportButtonState:false];
+  [self doExport:false];
+  [self setExportButtonState:true];
+}
 
 @end

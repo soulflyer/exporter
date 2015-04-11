@@ -59,53 +59,44 @@ script Aperture
     return allYearRecords
   end getAllProjects
   
---------------------------------------------------------------------------------------------------------------------
-on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark
+---------------------------------------------------------------------------------
+on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark exportEverything:everything
   log "exportProject starting export to " & thePath
   set thePath    to thePath    as string
   set theProject to theProject as string
   set theMonth   to theMonth   as string
   set theYear    to theYear    as string
-  my removeAndReplaceDir(thePath)
-  tell application "Aperture"
-    tell folder theYear
-      tell folder theMonth
-        tell project theProject
-          set cursel to (every image version where (main rating is greater than 2) or (color label is red)) as list
-        end tell
-      end tell
-    end tell
-  end tell
-  my exportPics:curSel toDirectory:thePath atSize:theSize withWatermark:watermark  
-end exportProject
-
---------------------------------------------------------------------------------------------------------------------
-on exportProjectModified:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark
-  log "exportProject starting export to " & thePath
-  set thePath    to thePath    as string
-  set theProject to theProject as string
-  set theMonth   to theMonth   as string
-  set theYear    to theYear    as string
+  set everything to everything as string
   set modifiedList to {}
   tell application "Aperture"
     tell folder theYear
       tell folder theMonth
         tell project theProject
           set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
-          repeat with image in imagelist
-            set modifiedDate to value of other tag "lastModifiedDate" of image
-            if (exists IPTC tag "ReferenceDate" of image) then
-              set exportedDateString to value of IPTC tag "ReferenceDate" of image
-            end if
-            set exportedDate to my stringToDate:exportedDateString
-            if (modifiedDate comes after exportedDate) then
-              set end of modifiedList to image
-            end if
-          end repeat
+          my logg:("Set imagelist")
+          my logg:("everything " & everything)
+          if everything equals "false" then
+            repeat with image in imagelist
+              set modifiedDate to value of other tag "lastModifiedDate" of image
+              if (exists IPTC tag "ReferenceDate" of image) then
+                set exportedDateString to value of IPTC tag "ReferenceDate" of image
+              end if
+              set exportedDate to my stringToDate:exportedDateString
+              if (modifiedDate comes after exportedDate) then
+                set end of modifiedList to image
+                my logg:("adding " & name of image)
+              end if
+            end repeat
+          else
+            my logg:("Setting modifiedList to imagelist")
+            my removeAndReplaceDir(thePath)
+            set modifiedList to imagelist
+          end if
         end tell
       end tell
     end tell
   end tell
+  
   if length of modifiedList is greater than 0 then
     my exportPics:modifiedList toDirectory:thePath atSize:theSize withWatermark:watermark
   end if
@@ -326,7 +317,7 @@ end libraryPath
 
 --------------------------------------------------------------------------------------------------------------------
 on removeAndReplaceDir(dirName)
-		my logg:("Removing previous versions in " & dirName)
+		my logg:("Removing previous versions and directory " & dirName)
     if my fileExists(POSIX path of dirName) then
       set thescript to "rm -r " & dirName
       do shell script thescript

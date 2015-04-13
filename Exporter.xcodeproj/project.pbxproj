@@ -13,6 +13,7 @@
 		AE5961581A4A726400CB9DD2 /* ProjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5961571A4A726400CB9DD2 /* ProjectTest.m */; };
 		AE59615A1A4DB10B00CB9DD2 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE5961591A4DB10B00CB9DD2 /* Preferences.xib */; };
 		AE59615D1A4F135300CB9DD2 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */; };
+		AE8F10D91ADB86290006B2F6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AE8F10D81ADB86290006B2F6 /* main.m */; };
 		AED964591A3AA4F000E72772 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AED964581A3AA4F000E72772 /* AppDelegate.m */; };
 		AED9645B1A3AA4F000E72772 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AED9645A1A3AA4F000E72772 /* main.m */; };
 		AED9645D1A3AA4F000E72772 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AED9645C1A3AA4F000E72772 /* Images.xcassets */; };
@@ -32,6 +33,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AE8F10D41ADB86290006B2F6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		AE5584A31ACA8E860007AE41 /* IntegerToColourTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntegerToColourTransformer.h; sourceTree = "<group>"; };
 		AE5584A41ACA8E860007AE41 /* IntegerToColourTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegerToColourTransformer.m; sourceTree = "<group>"; };
@@ -44,6 +57,8 @@
 		AE5961591A4DB10B00CB9DD2 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Preferences.xib; path = ../Preferences.xib; sourceTree = "<group>"; };
 		AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
 		AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
+		AE8F10D61ADB86290006B2F6 /* modified */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = modified; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE8F10D81ADB86290006B2F6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AED964521A3AA4F000E72772 /* Exporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Exporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED964561A3AA4F000E72772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AED964571A3AA4F000E72772 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -59,6 +74,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AE8F10D31ADB86290006B2F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AED9644F1A3AA4F000E72772 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -77,12 +99,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE8F10D71ADB86290006B2F6 /* modified */ = {
+			isa = PBXGroup;
+			children = (
+				AE8F10D81ADB86290006B2F6 /* main.m */,
+			);
+			path = modified;
+			sourceTree = "<group>";
+		};
 		AED964491A3AA4F000E72772 = {
 			isa = PBXGroup;
 			children = (
 				AED964751A3AB21000E72772 /* AppleScriptObjC.framework */,
 				AED964541A3AA4F000E72772 /* Exporter */,
 				AED964681A3AA4F100E72772 /* ExporterTests */,
+				AE8F10D71ADB86290006B2F6 /* modified */,
 				AED964531A3AA4F000E72772 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,6 +123,7 @@
 			children = (
 				AED964521A3AA4F000E72772 /* Exporter.app */,
 				AED964651A3AA4F100E72772 /* ExporterTests.xctest */,
+				AE8F10D61ADB86290006B2F6 /* modified */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,9 +139,9 @@
 				AED9645C1A3AA4F000E72772 /* Images.xcassets */,
 				AE59615B1A4F135300CB9DD2 /* PreferencesWindowController.h */,
 				AE59615C1A4F135300CB9DD2 /* PreferencesWindowController.m */,
-				AED9645E1A3AA4F000E72772 /* MainMenu.xib */,
 				AE5584A31ACA8E860007AE41 /* IntegerToColourTransformer.h */,
 				AE5584A41ACA8E860007AE41 /* IntegerToColourTransformer.m */,
+				AED9645E1A3AA4F000E72772 /* MainMenu.xib */,
 				AE5961591A4DB10B00CB9DD2 /* Preferences.xib */,
 				AE59613E1A494D7500CB9DD2 /* TreeNode.h */,
 				AE59613F1A494D7500CB9DD2 /* TreeNode.m */,
@@ -149,6 +181,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AE8F10D51ADB86290006B2F6 /* modified */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE8F10DA1ADB86290006B2F6 /* Build configuration list for PBXNativeTarget "modified" */;
+			buildPhases = (
+				AE8F10D21ADB86290006B2F6 /* Sources */,
+				AE8F10D31ADB86290006B2F6 /* Frameworks */,
+				AE8F10D41ADB86290006B2F6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = modified;
+			productName = modified;
+			productReference = AE8F10D61ADB86290006B2F6 /* modified */;
+			productType = "com.apple.product-type.tool";
+		};
 		AED964511A3AA4F000E72772 /* Exporter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AED9646F1A3AA4F100E72772 /* Build configuration list for PBXNativeTarget "Exporter" */;
@@ -193,6 +242,9 @@
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = soulflyer;
 				TargetAttributes = {
+					AE8F10D51ADB86290006B2F6 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
 					AED964511A3AA4F000E72772 = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
@@ -217,6 +269,7 @@
 			targets = (
 				AED964511A3AA4F000E72772 /* Exporter */,
 				AED964641A3AA4F100E72772 /* ExporterTests */,
+				AE8F10D51ADB86290006B2F6 /* modified */,
 			);
 		};
 /* End PBXProject section */
@@ -242,6 +295,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AE8F10D21ADB86290006B2F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE8F10D91ADB86290006B2F6 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AED9644E1A3AA4F000E72772 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -287,6 +348,26 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AE8F10DB1ADB86290006B2F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		AE8F10DC1ADB86290006B2F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AED9646D1A3AA4F100E72772 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -424,6 +505,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE8F10DA1ADB86290006B2F6 /* Build configuration list for PBXNativeTarget "modified" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE8F10DB1ADB86290006B2F6 /* Debug */,
+				AE8F10DC1ADB86290006B2F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		AED9644D1A3AA4F000E72772 /* Build configuration list for PBXProject "Exporter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

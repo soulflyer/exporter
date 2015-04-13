@@ -287,17 +287,39 @@ on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
 end modifiedPics
 
 --------------------------------------------------------------------------------------------------------------------
-on stringToDate:dateString
-  set yr to characters 1 thru 4 of dateString
-  set mn to characters 5 thru 6 of dateString
-  set dy to characters 7 thru 8 of dateString
-  set hrs to characters 10 thru 11 of dateString
-  set mns to characters 12 thru 13 of dateString
-  set secs to characters 14 thru 15 of dateString
-  set datestring to dy & "/" & mn & "/" & yr & " " & hrs & ":" & mns & ":" & secs as string
-  tell current application
-    set returnDate to date dateString as date
+on exportedPics:theProject ofMonth:theMonth ofYear:theYear
+  set theProject to theProject as string
+  set theMonth   to theMonth   as string
+  set theYear    to theYear    as string
+  set modifiedList to {}
+  set exportedDateString to ""
+  tell application "Aperture"
+    tell folder theYear
+      tell folder theMonth
+        tell project theProject
+          set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
+        end tell
+      end tell
+    end tell
   end tell
+  return imageList
+end exportedPics
+
+--------------------------------------------------------------------------------------------------------------------
+on stringToDate:dateString
+  set returnDate to current date
+  if length of dateString is greater than 0 then
+    set yr to characters 1 thru 4 of dateString
+    set mn to characters 5 thru 6 of dateString
+    set dy to characters 7 thru 8 of dateString
+    set hrs to characters 10 thru 11 of dateString
+    set mns to characters 12 thru 13 of dateString
+    set secs to characters 14 thru 15 of dateString
+    set datestring to dy & "/" & mn & "/" & yr & " " & hrs & ":" & mns & ":" & secs as string
+    tell current application
+      set returnDate to date dateString as date
+    end tell
+  end if
   return returnDate
 end stringToDate
 

@@ -27,6 +27,7 @@
 -(NSString *)getNotes:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSString *)isUptodate:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 -(NSArray *)modifiedPics:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
+-(NSArray *)exportedPics:(NSString *)theProject ofMonth:(NSString *)theMonth ofYear:(NSString *)theYear;
 @end
 
 @interface AppDelegate ()
@@ -173,6 +174,7 @@ NSString* runCommand(NSString *commandToRun) {
   return [NSArray arrayWithArray:returnArray];
 }
 
+
 -(void)markProjectAtIndexPath:(NSIndexPath *)indexPath withState:(enum modifiedState)state{
   NSUInteger indexes[3];
   [indexPath getIndexes:indexes];
@@ -181,6 +183,17 @@ NSString* runCommand(NSString *commandToRun) {
   NSUInteger project = indexes[2];
   NSTreeNode *nd = [[[[treeController content][year] childNodes][month] childNodes][project] representedObject];
   [nd setValue:[NSString stringWithFormat:@"%d",state]  forKey:@"modified"];
+}
+
+-(void)markProjectAtIndexPath:(NSIndexPath *)indexPath withState:(enum modifiedState)state andExportDate:(NSDate*) exportDate{
+  NSUInteger indexes[3];
+  [indexPath getIndexes:indexes];
+  NSUInteger year    = indexes[0];
+  NSUInteger month   = indexes[1];
+  NSUInteger project = indexes[2];
+  NSTreeNode *nd = [[[[treeController content][year] childNodes][month] childNodes][project] representedObject];
+  [nd setValue:[NSString stringWithFormat:@"%d",state]  forKey:@"modified"];
+  [nd setValue:exportDate forKey:@"lastExport"];
 }
 
 -(Project *)projectFromIndexPath:(NSIndexPath *)indexPath{
@@ -203,20 +216,35 @@ NSString* runCommand(NSString *commandToRun) {
     [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
     [[self window] displayIfNeeded];
     NSArray *modifiedPics = [aperture modifiedPics:[project name] ofMonth:[project month] ofYear:[project year]];
-    NSLog(@"Modified %@",modifiedPics);
     [self setStatusMessage:[NSString stringWithFormat:@"Check complete, found %lu pics", (unsigned long)[modifiedPics count]]];
     if ([modifiedPics count] > 0) {
+      NSLog(@"Modified %@",modifiedPics);
       [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@ ",[project name]]];
       [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@\n",modifiedPics]];
       [[self window] displayIfNeeded];
       [self markProjectAtIndexPath:indexPath withState:dirty];
     }else{
-      [self markProjectAtIndexPath:indexPath withState:clean];
+      //[self markProjectAtIndexPath:indexPath withState:clean];
+      NSArray *exportedPics = [aperture exportedPics:[project name] ofMonth:[project month] ofYear:[project year]];
+      if ([exportedPics count] > 0){
+        if ([project exported]) {
+          [self markProjectAtIndexPath:indexPath withState:clean];
+          NSLog(@"There are already pictures exported");
+          [self setStatusMessage:[NSString stringWithFormat:@"There are already pictures exported from %@", [project name]]];
+        }else{
+          [self markProjectAtIndexPath:indexPath withState:dirty];
+          NSLog(@"There are pictures to export");
+          [self setStatusMessage:[NSString stringWithFormat:@"There are pictures to export in %@", [project name]]];
+        }
+      }else{
+        [self markProjectAtIndexPath:indexPath withState:unknown];
+        NSLog(@"No pictures to export");
+        [self setStatusMessage:[NSString stringWithFormat:@"No pictures to export in %@", [project name]]];
+      }
+      [[self window] displayIfNeeded];
     }
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
   }
-  [self setStatusMessage:[NSString stringWithFormat:@"Check complete"]];
-  [[self window] displayIfNeeded];
 }
 
 - (void)doExport:(BOOL)full{
@@ -226,59 +254,74 @@ NSString* runCommand(NSString *commandToRun) {
   }
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     Project *project = [self projectFromIndexPath:indexPath];
+    NSArray *exportedPics = [aperture exportedPics:[project name] ofMonth:[project month] ofYear:[project year]];
+    NSLog(@"Piclist %@", exportedPics);
+    NSLog(@"Piclist count %lu", (unsigned long)[exportedPics count]);
     NSLog(@"mastersPath %@",[[project mastersPath] stringByExpandingTildeInPath]);
     
-    //Check if the photos are online
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
+    //Check if there are any exporteable pictures
+    if ([exportedPics count] > 0) {
       
-      
-      [self setStatusMessage:@"Exporting thumbnails"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
-      
-      [self setStatusMessage:@"Exporting medium"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
-      
-      [self setStatusMessage:@"Exporting large"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
-      
-      [self setStatusMessage:@"Exporting fullsize"];
-      [[self window] displayIfNeeded];
-      [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
-      
-      [self setStatusMessage:@"Setting exported date"];
-      [[self window] displayIfNeeded];
-      [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
-      
-      [self setStatusMessage:@"Getting notes"];
-      [[self window] displayIfNeeded];
-      NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
-      NSLog(@"Notes %@",notes);
-      if (!notes) {
-        notes=(@"");
+      //Check if the photos are online
+      if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
+        
+        //Check if project has never been exported
+//        if (![project exported]) {
+//          NSLog(@"project not yet exported, should do full export");
+//        }
+        
+        [self setStatusMessage:@"Exporting thumbnails"];
+        [[self window] displayIfNeeded];
+        [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
+        
+        [self setStatusMessage:@"Exporting medium"];
+        [[self window] displayIfNeeded];
+        [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
+        
+        [self setStatusMessage:@"Exporting large"];
+        [[self window] displayIfNeeded];
+        [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
+        
+        [self setStatusMessage:@"Exporting fullsize"];
+        [[self window] displayIfNeeded];
+        [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
+        
+        [self setStatusMessage:@"Setting exported date"];
+        [[self window] displayIfNeeded];
+        [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
+        
+        [self setStatusMessage:@"Getting notes"];
+        [[self window] displayIfNeeded];
+        NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
+        NSLog(@"Notes %@",notes);
+        if (!notes) {
+          notes=(@"");
+        }
+        NSLog(@"Notes %@",notes);
+        NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
+        //NSLog(@"%@",cmd);
+        runCommand(cmd);
+        
+        [self setStatusMessage:@"Building web page"];
+        [[self window] displayIfNeeded];
+        cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
+        runCommand(cmd);
+        
+        //[self setExportButtonState:true];
+        [self markProjectAtIndexPath:indexPath withState:clean andExportDate:[project lastExportDate]];
+        [self setStatusMessage:@"Export complete"];
+        [[self window] displayIfNeeded];
+      }else{
+        NSLog(@"Masters are not online");
+        [self setStatusMessage:[NSString stringWithFormat:@"Masters for %@ are not online", [project name]]];
+        [[self window] displayIfNeeded];
       }
-      NSLog(@"Notes %@",notes);
-      NSString *cmd = [NSString stringWithFormat:@"mkdir -p %@; echo \"%@\" > %@/notes.txt", [project rootPath], notes, [project rootPath]];
-      //NSLog(@"%@",cmd);
-      runCommand(cmd);
-      
-      [self setStatusMessage:@"Building web page"];
-      [[self window] displayIfNeeded];
-      cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
-      runCommand(cmd);
-      
-      [self setExportButtonState:true];
-      [self markProjectAtIndexPath:indexPath withState:clean];
-      [self setStatusMessage:@"Export complete"];
-      [[self window] displayIfNeeded];
+      [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
     }else{
-      NSLog(@"Masters are not online");
-      [self setStatusMessage:[NSString stringWithFormat:@"Masters for %@ are not online", [project name]]];
+      NSLog(@"No pictures to export");
+      [self setStatusMessage:[NSString stringWithFormat:@"No pictures to export in %@", [project name]]];
       [[self window] displayIfNeeded];
     }
-    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
   }
 }
 

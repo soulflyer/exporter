@@ -81,13 +81,22 @@
                         <items>
                             <menuItem title="export" id="6kz-LZ-xSV">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="exportModified:" target="Voe-Tx-rLC" id="l7B-On-RNw"/>
+                                </connections>
                             </menuItem>
                             <menuItem title="full export" id="TgH-3W-HzE">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="export:" target="Voe-Tx-rLC" id="zvL-nl-Osh"/>
+                                </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="ks7-NZ-fjM"/>
                             <menuItem title="check" id="qwC-gx-0rI">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="modified:" target="Voe-Tx-rLC" id="jLC-pY-azn"/>
+                                </connections>
                             </menuItem>
                         </items>
                     </menu>
@@ -119,15 +128,6 @@
                 </menuItem>
                 <menuItem title="Help" id="wpr-3q-Mcd">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
-                        <items>
-                            <menuItem title="Exporter Help" keyEquivalent="?" id="FKE-Sm-Kum">
-                                <connections>
-                                    <action selector="showHelp:" target="-1" id="y7X-2Q-9no"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
                 </menuItem>
             </items>
         </menu>
@@ -196,7 +196,6 @@ IA
 </string>
                         </buttonCell>
                         <connections>
-                            <accessibilityConnection property="link" destination="qwC-gx-0rI" id="ycV-da-77f"/>
                             <action selector="modified:" target="Voe-Tx-rLC" id="KXh-Lx-tCM"/>
                         </connections>
                     </button>

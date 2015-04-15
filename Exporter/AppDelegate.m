@@ -251,6 +251,8 @@ NSString* runCommand(NSString *commandToRun) {
   NSString *fullString = @"false";
   if (full) {
     fullString = @"true";
+  }else{
+    fullString = @"false";
   }
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     Project *project = [self projectFromIndexPath:indexPath];
@@ -266,9 +268,10 @@ NSString* runCommand(NSString *commandToRun) {
       if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
         
         //Check if project has never been exported
-//        if (![project exported]) {
-//          NSLog(@"project not yet exported, should do full export");
-//        }
+        if (![project exported]) {
+          NSLog(@"project not yet exported, should do full export");
+          fullString = @"true";
+        }
         
         [self setStatusMessage:@"Exporting thumbnails"];
         [[self window] displayIfNeeded];

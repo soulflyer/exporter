@@ -273,27 +273,27 @@ NSString* runCommand(NSString *commandToRun) {
           fullString = @"true";
         }
         
-        [self setStatusMessage:@"Exporting thumbnails"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Exporting thumbnails", [project name]]];
         [[self window] displayIfNeeded];
         [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
         
-        [self setStatusMessage:@"Exporting medium"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Exporting medium", [project name]]];
         [[self window] displayIfNeeded];
         [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
         
-        [self setStatusMessage:@"Exporting large"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Exporting large", [project name]]];
         [[self window] displayIfNeeded];
         [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
         
-        [self setStatusMessage:@"Exporting fullsize"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Exporting fullsize", [project name]]];
         [[self window] displayIfNeeded];
         [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
         
-        [self setStatusMessage:@"Setting exported date"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Setting exported date", [project name]]];
         [[self window] displayIfNeeded];
         [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
         
-        [self setStatusMessage:@"Getting notes"];
+        [self setStatusMessage:[NSString stringWithFormat:@"%@: Getting notes", [project name]]];
         [[self window] displayIfNeeded];
         NSString *notes=[aperture getNotes:[project name] ofMonth:[project month] ofYear:[project year]];
         NSLog(@"Notes %@",notes);

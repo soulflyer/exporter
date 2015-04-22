@@ -213,36 +213,36 @@ NSString* runCommand(NSString *commandToRun) {
   [[self window] displayIfNeeded];
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     Project *project = [self projectFromIndexPath:indexPath];
-    [self setStatusMessage:[NSString stringWithFormat:@"Checking %@",[project name]]];
+    [self setStatusMessage:[NSString stringWithFormat:@"Checking: %@",[project name]]];
     [[self window] displayIfNeeded];
     NSArray *modifiedPics = [aperture modifiedPics:[project name] ofMonth:[project month] ofYear:[project year]];
     [self setStatusMessage:[NSString stringWithFormat:@"Check complete, found %lu pics", (unsigned long)[modifiedPics count]]];
+    NSString *message;
     if ([modifiedPics count] > 0) {
       NSLog(@"Modified %@",modifiedPics);
       [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@ ",[project name]]];
       [[self consoleWindow] insertText:[NSString stringWithFormat:@"%@\n",modifiedPics]];
       [[self window] displayIfNeeded];
       [self markProjectAtIndexPath:indexPath withState:dirty];
+      message = [NSString stringWithFormat:@"%@:\t found %lu modified pictures.", [project name], [modifiedPics count]];
     }else{
-      //[self markProjectAtIndexPath:indexPath withState:clean];
       NSArray *exportedPics = [aperture exportedPics:[project name] ofMonth:[project month] ofYear:[project year]];
       if ([exportedPics count] > 0){
         if ([project exported]) {
           [self markProjectAtIndexPath:indexPath withState:clean];
-          NSLog(@"There are already pictures exported");
-          [self setStatusMessage:[NSString stringWithFormat:@"There are already pictures exported from %@", [project name]]];
+          message = [NSString stringWithFormat:@"%@:\t already pictures exported.", [project name]];
         }else{
           [self markProjectAtIndexPath:indexPath withState:dirty];
-          NSLog(@"There are pictures to export");
-          [self setStatusMessage:[NSString stringWithFormat:@"There are pictures to export in %@", [project name]]];
+          message = [NSString stringWithFormat:@"%@:\t has pictures to export.", [project name]];
         }
       }else{
         [self markProjectAtIndexPath:indexPath withState:unknown];
-        NSLog(@"No pictures to export");
-        [self setStatusMessage:[NSString stringWithFormat:@"No pictures to export in %@", [project name]]];
+        message = [NSString stringWithFormat:@"%@:\t has no pictures to export.", [project name]];
       }
-      [[self window] displayIfNeeded];
     }
+    NSLog(@"%@",message);
+    [self setStatusMessage:message];
+    [[self window] displayIfNeeded];
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantPast]];
   }
 }
@@ -257,7 +257,7 @@ NSString* runCommand(NSString *commandToRun) {
   for (NSIndexPath *indexPath in [self selectedProjectIndexes]){
     Project *project = [self projectFromIndexPath:indexPath];
     NSArray *exportedPics = [aperture exportedPics:[project name] ofMonth:[project month] ofYear:[project year]];
-    NSLog(@"Piclist %@", exportedPics);
+    //NSLog(@"Piclist %@", exportedPics);
     NSLog(@"Piclist count %lu", (unsigned long)[exportedPics count]);
     NSLog(@"mastersPath %@",[[project mastersPath] stringByExpandingTildeInPath]);
     

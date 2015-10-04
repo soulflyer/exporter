@@ -38,7 +38,7 @@
 
 @implementation AppDelegate
 
-#define defaultPhotosPath @"~/Pictures"
+#define defaultPhotosPath @"~/Pictures/Published"
 #define photosPathKey @"photosPath"
 #define defaultTopFolders @"2014,2015"
 #define topFoldersKey @"topFolders"

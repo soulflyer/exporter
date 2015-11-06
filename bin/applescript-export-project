@@ -1,0 +1,24 @@
+#!/usr/bin/osascript
+-- Depends on a compiled version of Aperture.applescript from Code/exporter
+-- use:
+--
+-- osacompile -o /Library/Script\ Libraries/Aperture.scpt ~/Code/exporter/Exporter/Aperture.applescript
+--
+-- Then remove the first and last lines defining script Aperture
+--
+-- expects parameters in strict order, and the month has to be an integer.
+on run argv
+  set pyear to item  1 of argv
+  set pmonth to item 2 of argv
+
+  set proj to item 3 of argv
+  set directory to item 4 of argv
+  set psize to item 5 of argv
+  set watermark to item 6 of argv
+  set everything to item 7 of argv
+  tell script "Aperture"
+    set pmonthstring to integerToMonthString_(pmonth)
+    exportProject_ofMonth_ofYear_toDirectory_atSize_withWatermark_exportEverything_(proj, pmonthstring, pyear, directory, psize, watermark, everything)
+    log integerToMonthString_(11)
+  end tell
+end run

@@ -13,6 +13,8 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate>{
   Aperture *aperture;
   NSArray *apertureTree;
+  NSOperationQueue* backgroundQueue;
+  NSOperationQueue* mainQueue;
   IBOutlet NSOutlineView *outlineView;
   IBOutlet NSTreeController *treeController;
   //IBOutlet NSTextView *consoleWindow;

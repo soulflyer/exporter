@@ -275,6 +275,8 @@ on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
               set exportedDateString to value of IPTC tag "ReferenceDate" of image
             end if
             set exportedDate to my stringToDate:exportedDateString
+            (my logg:(return & "exportedDate " & exportedDate & return & "modifiedDate " & modifiedDate))
+            
             if (modifiedDate comes after exportedDate) then
               set end of modifiedList to name of image
             end if

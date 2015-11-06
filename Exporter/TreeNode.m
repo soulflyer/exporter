@@ -12,12 +12,13 @@
 
 
 @implementation TreeNode
-@synthesize entityName,exported,modified,firstExport,lastExport;
+@synthesize entityName,exported,modified,firstExport,lastExport,count;
 + (NSTreeNode *) makeNode:(NSString *)nodeName {
   TreeNode *treeNode  = [[TreeNode alloc]init];
   treeNode.entityName = nodeName;
   treeNode.exported   = NO;
   treeNode.modified   = unknown;
+  //treeNode.count      = [NSNumber numberWithInt:0];
   //treeNode.project = nil;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
@@ -27,6 +28,7 @@
   treeNode.entityName = nodeName;
   treeNode.exported   = exported;
   treeNode.modified   = unknown;
+  //treeNode.count      = [NSNumber numberWithInt:0];
   //treeNode.project = nil;
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
@@ -38,6 +40,7 @@
   treeNode.firstExport = firstExport;
   treeNode.lastExport  = lastExport;
   treeNode.modified    = unknown;
+  //treeNode.count       = [NSNumber numberWithInt:0];
   return [NSTreeNode treeNodeWithRepresentedObject:treeNode];
 }
 

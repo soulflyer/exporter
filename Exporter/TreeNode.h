@@ -18,6 +18,7 @@
   modifiedState modified;
   NSDate   *firstExport;
   NSDate   *lastExport;
+  NSNumber *count;
   //Project *project;
 }
 
@@ -26,6 +27,7 @@
 @property modifiedState modified;
 @property NSDate *firstExport;
 @property NSDate *lastExport;
+@property NSNumber *count;
 
 + (NSTreeNode *) makeNode:(NSString *)nodeName;
 + (NSTreeNode *) makeNode:(NSString *)nodeName exported:(BOOL)exported;

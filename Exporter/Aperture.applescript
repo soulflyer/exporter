@@ -61,7 +61,7 @@ script Aperture
   
 ---------------------------------------------------------------------------------
 on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath atSize:theSize withWatermark:watermark exportEverything:everything
-  log "exportProject starting export to " & thePath
+  --log "exportProject starting export to " & thePath
   set thePath    to thePath    as string
   set theProject to theProject as string
   set theMonth   to theMonth   as string
@@ -73,8 +73,8 @@ on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath 
       tell folder theMonth
         tell project theProject
           set imagelist to (every image version where ((main rating is greater than 2) or (color label is red)))
-          my logg:("Set imagelist")
-          my logg:("everything " & everything)
+          --my logg:("Set imagelist")
+          --my logg:("exporting everything " & everything)
           if everything equals "false" then
             repeat with image in imagelist
               set modifiedDate to value of other tag "lastModifiedDate" of image
@@ -84,11 +84,11 @@ on exportProject:theProject ofMonth:theMonth ofYear:theYear toDirectory:thePath 
               set exportedDate to my stringToDate:exportedDateString
               if (modifiedDate comes after exportedDate) then
                 set end of modifiedList to image
-                my logg:("adding " & name of image)
+                --my logg:("adding " & name of image)
               end if
             end repeat
           else
-            my logg:("Setting modifiedList to imagelist")
+            --my logg:("Setting modifiedList to imagelist")
             my removeAndReplaceDir(thePath)
             set modifiedList to imagelist
           end if
@@ -143,8 +143,7 @@ on setExportDateOf:theProject ofMonth:theMonth ofYear:theYear
     end tell
     repeat with pic in cursel
       tell pic
-        --TODO check picture master is online before changing the exportedDate
-        (my logg:("setting export date of " & name))
+        --(my logg:("setting export date of " & name))
         make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
       end tell
     end repeat
@@ -204,8 +203,7 @@ on setExportDateOfModified:theProject ofMonth:theMonth ofYear:theYear
     end tell
     repeat with pic in modifiedList
       tell pic
-        --TODO check picture master is online before changing the exportedDate
-        (my logg:("setting export date of " & name))
+        --(my logg:("setting export date of " & name))
         make new IPTC tag with properties {name:"ReferenceDate", value:exportedDate}
       end tell
     end repeat
@@ -226,10 +224,10 @@ on exportPics:selection toDirectory:thePath atSize:theExportSetting withWatermar
   end tell
   if watermark equals "true" then
     set thescript to "/Users/iain/bin/add-watermark " & tempPath & "/*.jpg "
-    log thescript
+    log "Adding watermark"
     do shell script thescript
-    else
-    log "No watermark on " & thePath
+    --else
+    --log "No watermark"
   end if
   set thescript to "mv " & tempPath & "/* " & thePath & "/ ; rm -r " & tempPath
   log thescript
@@ -275,7 +273,7 @@ on modifiedPics:theProject ofMonth:theMonth ofYear:theYear
               set exportedDateString to value of IPTC tag "ReferenceDate" of image
             end if
             set exportedDate to my stringToDate:exportedDateString
-            (my logg:(return & "exportedDate " & exportedDate & return & "modifiedDate " & modifiedDate))
+            --(my logg:(return & "exportedDate " & exportedDate & return & "modifiedDate " & modifiedDate))
             
             if (modifiedDate comes after exportedDate) then
               set end of modifiedList to name of image

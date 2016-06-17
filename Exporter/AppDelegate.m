@@ -284,7 +284,7 @@ NSString* runCommand(NSString *commandToRun) {
     
     //Check if there are any exporteable pictures
     if ([exportedPics count] > 0) {
-      
+      NSLog(@"project path %@", [project mastersPath] );
       //Check if the photos are online
       if ([[NSFileManager defaultManager] fileExistsAtPath:[[project mastersPath]stringByExpandingTildeInPath]]) {
         
@@ -297,25 +297,25 @@ NSString* runCommand(NSString *commandToRun) {
         [[self window] displayIfNeeded];
         [backgroundQueue addOperationWithBlock:^{
           NSLog(@"Exporting thumbnails");
-          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project thumbPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
+          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[[project thumbPath]stringByExpandingTildeInPath] atSize:@"JPEG - Thumbnail" withWatermark:@"false" exportEverything:fullString];
           [mainQueue addOperationWithBlock:^{
-            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting mediums.", [project name]]];
+            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting medium pics.", [project name]]];
             [[self window] displayIfNeeded];
           }];
           NSLog(@"Exporting mediums");
-          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project mediumPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
+          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[[project mediumPath]stringByExpandingTildeInPath] atSize:@"JPEG - Fit within 1024 x 1024" withWatermark:@"true" exportEverything:fullString];
           NSLog(@"Exporting larges");
           [mainQueue addOperationWithBlock:^{
-            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting larges.", [project name]]];
+            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting large pics.", [project name]]];
             [[self window] displayIfNeeded];
           }];
-          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project largePath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
+          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[[project largePath]stringByExpandingTildeInPath] atSize:@"JPEG - Fit within 2048 x 2048" withWatermark:@"true" exportEverything:fullString];
           NSLog(@"Exporting fullsize");
           [mainQueue addOperationWithBlock:^{
-            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting fullsizes.", [project name]]];
+            [self setStatusMessage:[NSString stringWithFormat:@"%@ - exporting fullsize pics.", [project name]]];
             [[self window] displayIfNeeded];
           }];
-          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[project fullsizePath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
+          [aperture exportProject:[project name] ofMonth:[project month] ofYear: [project year] toDirectory:[[project fullsizePath]stringByExpandingTildeInPath] atSize:@"JPEG - Original Size" withWatermark:@"false" exportEverything:fullString];
           NSLog(@"Setting export date");
           [aperture setExportDateOf:[project name] ofMonth:[project month] ofYear:[project year]];
           //NSLog(@"Geting notes");
@@ -330,6 +330,11 @@ NSString* runCommand(NSString *commandToRun) {
           
           cmd=[NSString stringWithFormat:@"/Users/iain/bin/build-shoot-page %@",[project rootPath]];
           runCommand(cmd);
+          
+          cmd=[NSString stringWithFormat:@"/Users/iain/bin/save-meta %@",[project fullsizePath]];
+          NSLog(@"Adding pics to database");
+          runCommand(cmd);
+          
           [mainQueue addOperationWithBlock:^{
             NSLog(@"Export of %@ complete.", [project name]);
             [self markProjectAtIndexPath:indexPath withState:clean andExportDate:[project lastExportDate]];

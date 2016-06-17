@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment version="101000" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -139,7 +139,6 @@
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zzn-3c-I46">
                         <rect key="frame" x="18" y="20" width="688" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="Yia-oe-bmO">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -163,7 +162,6 @@
                                 <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" id="8FA-ok-Ptx">
                                     <rect key="frame" x="0.0" y="0.0" width="147" height="529"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <animations/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <size key="minSize" width="147" height="529"/>
                                     <size key="maxSize" width="463" height="10000000"/>
@@ -172,25 +170,20 @@
                                     <size key="maxSize" width="463" height="10000000"/>
                                 </textView>
                             </subviews>
-                            <animations/>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
-                        <animations/>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="Dfq-LR-koc">
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="HLY-Bj-cuz">
                             <rect key="frame" x="224" y="1" width="15" height="133"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                     </scrollView>
                     <button verticalHuggingPriority="750" id="fFr-r5-MG9">
                         <rect key="frame" x="799" y="13" width="80" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Check" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="QgS-Kh-Z37">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -205,7 +198,6 @@ IA
                     <button verticalHuggingPriority="750" id="u0K-UN-5mf">
                         <rect key="frame" x="718" y="13" width="81" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2jJ-BX-n4o">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -226,9 +218,8 @@ DQ
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView appearanceType="vibrantLight" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" autosaveColumns="NO" rowSizeStyle="automatic" headerView="abI-go-ey4" viewBased="YES" indentationPerLevel="16" autosaveExpandedItems="YES" outlineTableColumn="Dlc-4u-2c1" id="UFY-zL-NVj">
-                                    <rect key="frame" x="0.0" y="0.0" width="694" height="513"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="690" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
                                     <size key="intercellSpacing" width="2" height="3"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -289,7 +280,7 @@ DQ
                                                 <binding destination="aIl-ic-M7M" name="value" keyPath="arrangedObjects.representedObject.lastExport" id="mtG-V8-j5k"/>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="" editable="NO" width="76" minWidth="10" maxWidth="3.4028234663852886e+38" id="NkV-Ga-mdN">
+                                        <tableColumn identifier="" editable="NO" width="80" minWidth="10" maxWidth="3.4028234663852886e+38" id="NkV-Ga-mdN">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="# To Export">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -312,28 +303,35 @@ DQ
                                     </tableColumns>
                                 </outlineView>
                             </subviews>
-                            <animations/>
                             <nil key="backgroundColor"/>
                         </clipView>
-                        <animations/>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="7Ml-Rf-bAY">
                             <rect key="frame" x="1" y="514" width="694" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="UH7-ht-Lnj">
                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                         <tableHeaderView key="headerView" id="abI-go-ey4">
                             <rect key="frame" x="0.0" y="0.0" width="694" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </tableHeaderView>
                     </scrollView>
+                    <button verticalHuggingPriority="750" id="F3y-lt-O3i">
+                        <rect key="frame" x="637" y="13" width="81" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Full" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xaN-aP-Xlt">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent">f</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="export:" target="Voe-Tx-rLC" id="hpW-ht-4n4"/>
+                            <binding destination="Voe-Tx-rLC" name="enabled" keyPath="exportButtonState" id="jN2-gW-rkg"/>
+                        </connections>
+                    </button>
                 </subviews>
-                <animations/>
             </view>
             <point key="canvasLocation" x="539.5" y="192"/>
         </window>

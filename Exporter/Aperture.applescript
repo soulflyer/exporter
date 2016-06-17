@@ -341,6 +341,7 @@ end libraryPath
 on removeAndReplaceDir(dirName)
 		my logg:("Removing previous versions and directory " & dirName)
     if my fileExists(POSIX path of dirName) then
+      my logg:("Removing directory")
       set thescript to "rm -r " & dirName
       do shell script thescript
     end if
@@ -400,7 +401,7 @@ end monthToIntegerString:
 
 --------------------------------------------------------------------------------------------------------------------
 on fileExists(posixPath)
-		return ((do shell script "if ls " & quoted form of posixPath & " &>/dev/null; then
+		return ((do shell script "if ls " & quoted form of posixPath & " >/dev/null; then
     echo 1;
     else
     echo 0;
